@@ -149,6 +149,9 @@ class Category_share_model extends CI_Model {
             return fc_lang('共享模块必须选择');
         }
 
+        if ($data['tid'] != 2) {
+            $data['setting']['linkurl'] = "";
+        }
 
         $mid = $data['tid'] == 1 ? $data['mid'] : '';
         $insert = array(
@@ -211,6 +214,11 @@ class Category_share_model extends CI_Model {
         $data['setting']['getchild'] = intval($data['setting']['getchild']);
 
         $mid = $data['tid'] == 1 ? $data['mid'] : '';
+
+
+        if ($data['tid'] != 2) {
+            $data['setting']['linkurl'] = "";
+        }
         $update = array(
             'pid' => (int)$data['pid'],
             'tid' => (int)$data['tid'],

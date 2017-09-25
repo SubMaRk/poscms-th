@@ -106,7 +106,7 @@ class Api extends M_Controller {
         !$this->uid && $this->admin_msg(fc_lang('会话超时，请重新登录'));
 
         // 参数判断
-        $dirname = $this->input->get('module');
+        $dirname = dr_safe_replace($this->input->get('module'));
         !$dirname && $this->admin_msg(fc_lang('模块module参数不存在'));
 
         // 站点选择
@@ -143,7 +143,7 @@ class Api extends M_Controller {
         }
 
         if (IS_POST) {
-            $data = $this->input->post('data');
+            $data = $this->input->post('data', true);
             $catid = (int)$this->input->post('catid');
             $catid && $this->db->where_in('catid', $category[$catid]['catids']);
             if (isset($data['keyword']) && $data['keyword']
@@ -216,9 +216,6 @@ class Api extends M_Controller {
      */
     public function notice() {
 
-        $value = $this->uid ? $this->db->where('uid', (int)$this->uid)->count_all_results('member_new_notice') : 0;
-        $callback = isset($_GET['callback']) ? dr_safe_replace($this->input->get('callback', TRUE)) : 'callback';
-        exit($callback . '(' . json_encode(array('status' => $value)) . ')');
     }
 
     /**
@@ -226,25 +223,7 @@ class Api extends M_Controller {
      */
     public function online() {
 
-        $uid = (int)$this->input->get('uid');
-        $type = (int)$this->input->get('type');
-        $icon = MEMBER_THEME_PATH.'images/';
 
-        if ($this->db->where('uid', $uid)->count_all_results('member_online')) {
-            $icon.= 'web'.$type.'.gif';
-            $online = 1;
-        } else {
-            $icon.= 'web'.$type.'-off.gif';
-            $online = 0;
-        }
-
-        $member = $this->db->select('username')->where('uid', $uid)->get('member')->row_array();
-
-        $string = '<img src="'
-            .$icon.'" align="absmiddle" style="cursor:pointer" onclick="dr_chat(this)" username="'
-            .$member['username'].'" uid='.$uid.' online='.$online.'>';
-
-        exit("document.write('$string');");
     }
 
     /**
@@ -273,22 +252,6 @@ class Api extends M_Controller {
      */
     public function space_template() {
 
-        $name = dr_safe_replace($this->input->get('name', TRUE));
-        $style = dr_safe_replace($this->input->get('style', TRUE));
-
-        ob_start();
-        $this->template->cron = 0;
-        $this->template->display('statics/space/'.$style.'/'.$name);
-        $html = ob_get_contents();
-        ob_clean();
-
-        // 格式输出
-        if (isset($_GET['return']) && $_GET['return'] == 'js') {
-            $html = addslashes(str_replace(array("\r", "\n", "\t", chr(13)), array('', '', '', ''), $html));
-            echo 'document.write("'.$html.'");';exit;
-        } else {
-            exit($html);
-        }
     }
 
     /**
@@ -304,7 +267,7 @@ class Api extends M_Controller {
      */
     public function category() {
 
-        $dir = $this->input->get('module');
+        $dir = $this->input->get('module', true);
         $pid = (int)$this->input->get('parent_id');
         $json = array();
         $category = $this->get_cache('module-'.SITE_ID.'-'.$dir, 'category');
