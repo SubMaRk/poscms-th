@@ -45,21 +45,10 @@
 
 	<script src="{THEME_PATH}admin/global/scripts/app.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		<?php $bg = array('"'.THEME_PATH.'admin/pages/media/bg/1.jpg"',
-				'"'.THEME_PATH.'admin/pages/media/bg/2.jpg"',
-				'"'.THEME_PATH.'admin/pages/media/bg/3.jpg"',
-				'"'.THEME_PATH.'admin/pages/media/bg/4.jpg"');
-		shuffle($bg);
-		?>
+
 		var sys_theme = "{THEME_PATH}admin/";
 		jQuery(document).ready(function() {
-			$.backstretch([
-						{implode(',', $bg)}
-					], {
-						fade: 1000,
-						duration: 8000
-					}
-			);
+
 			top.$('.page-loading').remove();
 			{if $username}
 			$("#password").focus();
@@ -84,7 +73,7 @@
 </head>
 <!-- END HEAD -->
 
-<body class=" login">
+<body class=" login" style="background-color: #337ab7!important">
 <!-- BEGIN LOGO -->
 <div class="logo login-logo">
 	<a href="{SITE_URL}">{DR_NAME}</a>
@@ -137,7 +126,7 @@
 </div>
 <!-- END LOGIN -->
 <!-- BEGIN COPYRIGHT -->
-<div class="copyright"> {SITE_NAME} </div>
+<div class="copyright"> <a href="https://gitee.com/dayrui/poscms/" style="color: #fff" target="_blank">POSCMS免费版</a> | <a href="http://www.ci-bbs.com/poscms/" style="color: #fff" target="_blank">产品论坛提问</a> </div>
 <!-- END COPYRIGHT -->
 
 </body>
