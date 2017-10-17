@@ -271,14 +271,14 @@ class D_Category extends M_Controller {
                 $number	= $this->category_model->add_all($names, $data, $field);
                 $this->system_log('批量添加站点【#'.SITE_ID.'】模块【'.APP_DIR.'】栏目【'.$number.'个】'); // 记录日志
                 //$this->clear_cache('module');
-                $this->admin_msg(fc_lang('批量添加%s个', $number), dr_url(APP_DIR.'/category/index'), 1);
+                $this->admin_msg(fc_lang('批量添加%s个，更新缓存生效', $number), dr_url(APP_DIR.'/category/index'), 1);
             } else {
                 $result	= $this->category_model->add($data, $field);
                 if (is_numeric($result)) {
                     $this->clear_cache('module');
                     $this->system_log('添加站点【#'.SITE_ID.'】模块【'.APP_DIR.'】栏目【#'.$result.'】'); // 记录日志
                     $this->attachment_handle($this->uid, $this->category_model->tablename.'-'.$result, $field);
-                    $this->admin_msg(fc_lang('操作成功'), $backurl, 1, 1);
+                    $this->admin_msg(fc_lang('操作成功，更新缓存生效'), $backurl, 1, 1);
                 }
             }
         }
@@ -343,7 +343,7 @@ class D_Category extends M_Controller {
             $this->attachment_handle($this->uid, $this->category_model->tablename.'-'.$id, $this->thumb, $_data);
             //$this->clear_cache('module');
             $this->system_log('修改站点【#'.SITE_ID.'】模块【'.APP_DIR.'】栏目【#'.$id.'】'); // 记录日志
-            $this->admin_msg(fc_lang('操作成功'), $backurl, 1, 2);
+            $this->admin_msg(fc_lang('操作成功，更新缓存生效'), $backurl, 1, 2);
         }
 
         $category = $this->category_model->get_data();
