@@ -54,7 +54,7 @@ class D_Module extends D_Common {
 
         $cache = md5(dr_array2string($data).dr_array2string($id).$str.$default.$onlysub.$is_push.$is_first.$this->member['uid']);
         if ($cache_data = $this->get_cache_data($cache)) {
-            //return $cache_data;
+            return $cache_data;
         }
 
         $tree = array();
@@ -78,7 +78,7 @@ class D_Module extends D_Common {
                 // 验证权限
                 if ($t['pcatpost']) {
                     // 父栏目可发布时的权限
-                    if ($is_push) {
+                    if ($is_push && $t['child'] == 0) {
                         if (IS_MEMBER && !$this->module_rule[$t['id']]['add']) {
                             // 会员中心用户发布权限
                             if ($is_push && $t['child']) {

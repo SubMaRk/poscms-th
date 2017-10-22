@@ -1472,7 +1472,28 @@ class Module_model extends CI_Model {
                                 unset($c['setting']['url']);
                                 $CAT[$c['id']] = $c;
                                 $CAT_DIR[$c['dirname']] = $c['id'];
+                            }
 
+                            if ($data['share']) {
+                                foreach ($CAT as $i => $t) {
+                                    if (!$t['child'] && $t['tid'] == 1 && $t['mid'] != $dirname) {
+                                        unset($CAT[$i]);
+                                    }
+                                    // 验证mid
+                                    if ($CAT[$t['id']]['catids']) {
+                                        $mid = [];
+                                        foreach ($CAT[$t['id']]['catids'] as $c_catid) {
+                                            if ($CAT[$c_catid]['mid']) {
+                                                $mid[$CAT[$c_catid]['mid']] = 1;
+                                            }
+                                        }
+                                        if (!$mid) {
+                                            unset($CAT[$t['id']]);
+                                        } elseif (!isset($mid[$dirname])) {
+                                            unset($CAT[$t['id']]);
+                                        }
+                                    }
+                                }
                             }
 
                             // 栏目自定义字段，把父级栏目的字段合并至当前栏目
