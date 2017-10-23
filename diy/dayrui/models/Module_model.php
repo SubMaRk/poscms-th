@@ -1481,7 +1481,7 @@ class Module_model extends CI_Model {
                                     }
                                     // 验证mid
                                     if ($CAT[$t['id']]['catids']) {
-                                        $mid = [];
+                                        $mid = array();
                                         foreach ($CAT[$t['id']]['catids'] as $c_catid) {
                                             if ($CAT[$c_catid]['mid']) {
                                                 $mid[$CAT[$c_catid]['mid']] = 1;
