@@ -42,9 +42,9 @@ class Api extends M_Controller {
     /**
      * 广告访问
      */
-    public function poster_show() {
+    public function data2() {
 
-
+        exit('免费版不支持接口');
 
     }
     /**
