@@ -1033,7 +1033,7 @@ $.ajax({
                     // 如存在分页条件才进行分页查询
                     if ($system['page'] && $system['urlrule']) {
                         $page = max(1, (int)$_GET['page']);
-                        $row = $this->_query(preg_replace('/select \* from/iUs', 'SELECT count(*) as c FROM', $sql), $system['site'], $system['cache'], FALSE);
+                        $row = $this->_query(preg_replace('/select .* from /iUs', 'SELECT count(*) as c FROM ', $sql), $system['site'], $system['cache'], FALSE);
                         $total = (int)$row['c'];
                         $pagesize = $system['pagesize'] ? $system['pagesize'] : 10;
                         // 没有数据时返回空

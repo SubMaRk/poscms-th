@@ -12,9 +12,7 @@ class Site extends M_Controller {
 		
 		$this->template->assign(array(
 			'menu' => $this->get_menu_v3(array(
-				fc_lang('网站管理') => array('admin/site/index', 'globe'),
-				fc_lang('添加') => array('admin/site/add_js', 'plus'),
-				fc_lang('配置') => array(isset($_GET['id']) && $_GET['id'] ? 'admin/site/config/id/'.(int)$_GET['id'] : 'admin/site/config', 'cog'),
+				fc_lang('网站配置') => array('admin/site/index', 'globe'),
 			))
 		));
 		
