@@ -189,7 +189,7 @@ class Dtree {
 		$number = 1;
 
 		$this->count++;
-		if ($this->count > 3500) {
+		if ($this->count > 5500) {
 			return; // 防止死循环
 		}
 

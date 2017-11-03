@@ -341,7 +341,7 @@ class Category_share_model extends CI_Model {
      */
     private function get_pids($catid, $pids = '', $n = 1) {
 
-        if ($n > 5
+        if ($n > 100
             || !is_array($this->categorys)
             || !isset($this->categorys[$catid])) {
             return $pids;
@@ -369,7 +369,7 @@ class Category_share_model extends CI_Model {
 
         $childids = $catid;
 
-        if ($n > 5
+        if ($n > 100
             || !is_array($this->categorys)
             || !isset($this->categorys[$catid])) {
             return $childids;

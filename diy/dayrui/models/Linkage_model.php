@@ -249,7 +249,7 @@ class Linkage_model extends CI_Model {
      */
     private function get_pids($catid, $pids = '', $n = 1) {
 
-        if ($n > 10 || !is_array($this->categorys)
+        if ($n > 100 || !is_array($this->categorys)
             || !isset($this->categorys[$catid])) {
             return FALSE;
         }
@@ -290,7 +290,7 @@ class Linkage_model extends CI_Model {
      */
     private function get_childids($catid, $n = 1) {
         $childids = $catid;
-        if ($n > 5
+        if ($n > 100
             || !is_array($this->categorys)
             || !isset($this->categorys[$catid])) {
             return $childids;
