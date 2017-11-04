@@ -168,7 +168,7 @@ class Template {
             return TPLPATH.'pc/web/default/common/msg.html';
         }
 
-        show_error('模板文件 ('.(SYS_DEBUG ? $error : basename($error)).') 不存在', 200, '模板解析错误');
+        show_error('模板文件 ('.(SYS_DEBUG ? $error : str_replace(TPLPATH, '/', $error)).') 不存在', 200, '模板解析错误');
     }
 
     /**
