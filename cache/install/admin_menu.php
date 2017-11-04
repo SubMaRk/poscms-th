@@ -352,6 +352,11 @@ return array(
                 'icon' => 'fa fa-puzzle-piece',
                 'menu' => array(
                     array(
+                        'name' => '应用插件',
+                        'uri' => 'application/index',
+                        'icon' => 'fa fa-cloud',
+                    ),
+                    array(
                         'name' => '系统提醒',
                         'uri' => 'notice/index',
                         'icon' => 'fa fa-volume-down',
@@ -418,6 +423,21 @@ return array(
                         'name' => '使用文档',
                         'uri' => 'api/helponline',
                         'icon' => 'fa fa-book',
+                    ),
+                    array(
+                        'name' => '在线插件',
+                        'uri' => 'api/cjonline',
+                        'icon' => 'fa fa-plug',
+                    ),
+                    array(
+                        'name' => '功能模块',
+                        'uri' => 'api/mkonline',
+                        'icon' => 'fa fa-cogs',
+                    ),
+                    array(
+                        'name' => '网站模板',
+                        'uri' => 'api/mbonline',
+                        'icon' => 'fa fa-code',
                     ),
                 )
             ),
