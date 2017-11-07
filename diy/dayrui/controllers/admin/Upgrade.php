@@ -41,7 +41,7 @@ class Upgrade extends M_Controller {
             exit('<p style="color:red;"> 返回数据不规范，请联系官方！ </p>');
         }
 
-        exit('<p style="color:blue;"> 服务器程序最近更新时间为： '.$data.'</p>');
+        exit('<p> <a href="https://gitee.com/dayrui/poscms/" style="color:blue;" target="_blank">服务器程序最近更新时间为： '.$data.'</a></p>');
 
     }
 
