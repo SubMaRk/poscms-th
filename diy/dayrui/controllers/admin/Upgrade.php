@@ -31,19 +31,18 @@ class Upgrade extends M_Controller {
     // 版本列表
     public function vlist() {
 
-        $data = dr_catcher_data('http://www.poscms.net/index.php?c=fc&m=newlist&my='.(DR_VERSION_ID).'&domain='.dr_cms_domain_name($this->site_info[1]['SITE_URL']));
+        $data = dr_catcher_data('http://www.poscms.net/version.php?cms=finecms');
 
         if (!$data) {
-            exit('<p style="color:red;"> <a href="http://www.poscms.net/index.php?s=help&c=doc&m=bdb" target="_blank">单击前往下载补丁包！</a> </p>');
+            exit('<p style="color:red;"> 暂时无法获取到服务器端版本信息 </p>');
         }
 
-        $rt = dr_object2array(json_decode($data));
-        if (!$rt) {
+        if (strlen($data) > 20) {
             exit('<p style="color:red;"> 返回数据不规范，请联系官方！ </p>');
         }
 
-        $this->template->assign('rt', $rt);
-        $this->template->display('upgrande_vlist.html');exit;
+        exit('<p style="color:blue;"> 服务器程序最近更新时间为： '.$data.'</p>');
+
     }
 
 
