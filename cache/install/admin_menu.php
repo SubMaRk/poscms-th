@@ -420,6 +420,11 @@ return array(
                 'icon' => 'fa fa-cloud',
                 'menu' => array(
                     array(
+                        'name' => '程序升级',
+                        'uri' => 'upgrade/index',
+                        'icon' => 'fa fa-refresh',
+                    ),
+                    array(
                         'name' => '使用文档',
                         'uri' => 'api/helponline',
                         'icon' => 'fa fa-book',
