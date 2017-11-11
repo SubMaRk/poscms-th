@@ -1230,7 +1230,7 @@ class D_Common extends CI_Controller {
      * @param	int		$time	等待时间
      * @return  void
      */
-    public function admin_msg($msg, $url = '', $mark = 0, $time = 1) {
+    public function admin_msg($msg, $url = '', $mark = 0, $time = 0) {
 
         if (IS_API_AUTH) {
             echo $this->callback_json(array(

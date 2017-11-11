@@ -75,16 +75,6 @@
  echo $currentEnvironment[upload];?></td>
 				<td><?php echo $lowestEnvironment['upload'];?></td>
 			</tr>
-			<tr>
-				<td>磁盘空间</td>
-				<td><?php echo $recommendEnvironment['space'];?></td>
-				<td>
-<?php if (true ==  $currentEnvironment['space_ischeck']) {?><span class="correct_span">&radic;</span>
-<?php }else{?><span class="error_span">&times;</span>
-<?php }
- echo $currentEnvironment[space];?></td>
-				<td><?php echo $lowestEnvironment['space'];?></td>
-			</tr>
 		</table>
 		<table width="100%">
 			<tr>
