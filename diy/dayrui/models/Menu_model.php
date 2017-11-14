@@ -444,6 +444,7 @@ class Menu_model extends CI_Model{
 									'admin/page/index',
 									'admin/home/html',
 									'admin/tpl/index',
+									'admin/tag/index',
 									'admin/theme/index',
 									'admin/content/index',
 									'admin/comment/config',
