@@ -84,6 +84,26 @@
 <script type="text/javascript">
 	$(function() {
 		top.$('.page-loading').remove();
+		{if IS_ADMIN}
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "{SELF}?c=home&m=cache&at=config",
+            success: function (json) {
+            },
+            error: function(HttpRequest, ajaxOptions, thrownError) {
+            }
+        });
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "{SELF}?c=home&m=cache&at=data",
+            success: function (json) {
+            },
+            error: function(HttpRequest, ajaxOptions, thrownError) {
+            }
+        });
+        {/if}
 	});
 </script>
 </body>
