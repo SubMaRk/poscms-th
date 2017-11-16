@@ -2564,7 +2564,7 @@ class D_Common extends CI_Controller {
         $code = 1;
 
         // 以下不改
-        $code == 1 && $this->goto_404_page('无法找到对应的页面('.DR_URI.'),可能您没有配置好路由规则');
+        $code == 1 && $this->goto_404_page('无法找到对应的页面('.dr_safe_replace(DR_URI).'),可能您没有配置好路由规则');
         $code == 2 && $this->_indexc();
     }
 
