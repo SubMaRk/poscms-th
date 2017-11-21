@@ -371,9 +371,6 @@
                         <li><a href="{SITE_URL}" target="_blank"><i class="fa fa-home"></i> {fc_lang('网站首页')} </a></li>
                         <li><a href="javascript:;" onClick="logout();"><i class="fa fa-sign-in"></i> {fc_lang('退出系统')}</a></li>
                         <li class="divider"> </li>
-                        {if $ci->is_auth('admin/db/sql')}
-                        <li><a href="{dr_url('db/sql')}" target="right"><i class="fa fa-code"></i> {fc_lang('执行SQL')}</a></li>
-                        {/if}
                         {if $ci->is_auth('admin/check/index')}
                         <li><a href="{dr_url('check/index')}" target="right"><i class="fa fa-circle-o-notch"></i> {fc_lang('系统体检')}</a></li>
                         {/if}

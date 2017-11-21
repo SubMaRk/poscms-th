@@ -47,58 +47,6 @@ class Db extends M_Controller {
 		$this->template->display('db_index.html');
 	}
 
-
-	/**
-     * 执行sql
-     */
-    public function sql() {
-
-        $sql = '';
-        $count = $id = 0;
-
-        if (IS_POST) {
-            $id = $this->input->post('id');
-            $sql = str_replace('{dbprefix}', $this->db->dbprefix, $this->input->post('sql'));
-            if (preg_match('/select(.*)into outfile(.*)/i', $sql)) {
-                $this->admin_msg(fc_lang('存在非法select'));
-            }
-            $sql_data = explode(';SQL_FINECMS_EOL', trim(str_replace(array(PHP_EOL, chr(13), chr(10)), 'SQL_FINECMS_EOL', $sql)));
-            if ($sql_data) {
-                $db = $this->db;
-                foreach($sql_data as $query){
-                    if (!$query) {
-                        continue;
-                    }
-                    $queries = explode('SQL_FINECMS_EOL', trim($query));
-                    $ret = '';
-                    foreach($queries as $query) {
-                        $ret.= $query[0] == '#' || $query[0].$query[1] == '--' ? '' : $query;
-                    }
-                    if (!$ret) {
-                        continue;
-                    }
-                    $db->query($ret);
-                    $count++;
-                }
-                if ($count == 1 && stripos($ret, 'select') === 0) {
-                    $this->template->assign(array(
-                        'result' => $db->query($ret)->result_array(),
-                    ));
-                }
-            }
-        }
-
-        $this->template->assign(array(
-            'menu' => $this->get_menu_v3(array(
-                fc_lang('执行SQL') => array('admin/db/sql', 'database')
-            )),
-            'id' => $id,
-            'sql' => $sql,
-            'mcount' => $count,
-        ));
-        $this->template->display('db_sql.html');
-    }
-
 	/**
      * 表结构
      */
