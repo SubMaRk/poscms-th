@@ -153,8 +153,9 @@ class D_File extends M_Controller {
 		!is_dir($path) && exit('<p style="padding:10px 20px 20px 20px">'.fc_lang('文件目录不存在').'</p>');
 		
 		if (IS_POST) {
-			$file = trim(str_replace(array('/', '\\'), '', $this->input->post('file', true)), '/');
+			$file = trim(str_replace(array('/', '\\', ';'), '', $this->input->post('file', true)), '/');
 			!$file && exit(dr_json(0, fc_lang('文件或者目录不能为空'), 'file'));
+            substr_count($file, '.') > 1 && exit(dr_json(0, fc_lang('请确认否是有效的文件'), 'file'));
 			is_file($path.$file) && exit(dr_json(0, fc_lang('文件或者目录已经存在了'), 'file'));
 			$ext = strrchr($file, '.');
 			if ($ext) {
