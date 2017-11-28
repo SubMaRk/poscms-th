@@ -84,7 +84,7 @@ class Api extends M_Controller {
      * @return void
      */
     public function upload() {
-        $ext = 'jpg,gif,png,js,css,html,swf,zip';
+        $ext = 'jpg,gif,png,js,css,html';
         $this->template->assign(array(
             'ext' => str_replace(',', '|', $ext),
             'page' => 0,
