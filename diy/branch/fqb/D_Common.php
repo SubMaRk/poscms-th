@@ -2714,7 +2714,9 @@ class D_Common extends CI_Controller {
         if (!$mod) {
             return array(NULL, NULL);
         }
-
+        if ($mod['share']) {
+            $mod['category'] = $this->get_cache('module-'.SITE_ID.'-share', 'category');
+        }
         $cat = $mod['category'][$catid];
         $related = $parent = array();
 

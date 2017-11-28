@@ -828,7 +828,7 @@ $.ajax({
             case 'page': // 单页调用
 
                 $system['site'] = !$system['site'] ? SITE_ID : $system['site']; // 默认站点参数
-                $name = $system['module'] ? $system['module'] : 'index';
+                $name =  'index';
                 $data = $this->ci->get_cache('page-'.$system['site'], 'data', $name); // 单页缓存
                 if (!$data) {
                     return $this->_return($system['return'], '没有查询到内容');
