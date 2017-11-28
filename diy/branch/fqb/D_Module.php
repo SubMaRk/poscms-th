@@ -81,18 +81,10 @@ class D_Module extends D_Common {
                     if ($is_push && $t['child'] == 0) {
                         if (IS_MEMBER && !$this->module_rule[$t['id']]['add']) {
                             // 会员中心用户发布权限
-                            if ($is_push && $t['child']) {
-                                $t['html_disabled'] = 1;
-                            } else {
-                                continue;
-                            }
+                            continue;
                         } elseif (IS_ADMIN && !$this->is_category_auth($t['id'], 'add') && !$this->is_category_auth($t['id'], 'edit')) {
                             // 后台角色发布和修改权限
-                            if ($is_push && $t['child']) {
-                                $t['html_disabled'] = 1;
-                            } else {
-                                continue;
-                            }
+                            continue;
                         } elseif ($t['mid'] != $this->dir) {
                             continue;
                         }
