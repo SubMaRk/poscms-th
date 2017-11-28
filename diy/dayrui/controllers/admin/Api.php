@@ -105,7 +105,7 @@ class Api extends M_Controller {
     public function swfupload() {
 
         if (IS_POST) {
-            $ext = 'jpg,gif,png,js,css,html,swf,zip';
+            $ext = 'jpg,gif,png,js,css,html';
             $path = dr_authcode(urldecode($this->input->post('path')));
             !is_dir($path) && exit('0,目录（'.$path.'）不存在');
             $this->load->library('upload', array(
