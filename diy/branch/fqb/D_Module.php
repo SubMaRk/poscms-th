@@ -939,7 +939,7 @@ class D_Module extends D_Common {
         $id = $get['id'];
         $catid = (int)$get['catid'];
         $_GET['page'] = $get['page'];
-        $get['keyword'] = str_replace(array('+', ' '), '%', urldecode($get['keyword']));
+        $get['keyword'] = dr_safe_replace(str_replace(array('+', ' '), '%', urldecode($get['keyword'])));
         unset($get['s'], $get['c'], $get['m'], $get['id'], $get['page']);
 
         // 关键字个数判断
