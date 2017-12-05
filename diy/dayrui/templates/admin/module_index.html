@@ -165,7 +165,7 @@ function dr_copy_module(url) {
 									{if SYS_DEBUG}<a class="alist" href="javascript:;" onclick="dr_module_export('{dr_url('module/export',array('dir'=>$dir))}')"> <i class="fa fa-share-square-o"></i> {fc_lang('生成')}</a>{/if}
 									{if $this->ci->is_auth('admin/field/index')}<a class="aadd" href="{php echo $duri->uri2url('admin/field/index/rname/module/rid/'.$t.id);}"> <i class="fa fa-plus-square"></i> {fc_lang('模块字段')}</a>{/if}
 									{if $t.extend && $this->ci->is_auth('admin/field/index')}<a class="aadd" href="{php echo $duri->uri2url('admin/field/index/rname/extend/rid/'.$t.id);}"> <i class="fa fa-plus-circle"></i> {fc_lang('扩展字段')}</a>{/if}
-									{if $this->ci->is_auth('mform/index')}<a class="alist" href="{dr_url('mform/index',array('dir'=>$dir))}"> <i class="fa fa-tasks"></i> {fc_lang('表单')}</a>{/if}
+
 								{/if}
 							{else}
 								{if $this->ci->is_auth('module/config')}<a class="ago" href="{dr_url('space/setting/space')}"> <i class="fa fa-cog"></i> {fc_lang('配置')}</a>{/if}
