@@ -31,7 +31,7 @@ class Upgrade extends M_Controller {
     // 版本列表
     public function vlist() {
 
-        $data = dr_catcher_data('http://www.poscms.net/version.php?cms=finecms');
+        $data = dr_catcher_data('http://www.poscms.net/version.php?cms=poscms');
 
         if (!$data) {
             exit('<p style="color:red;"> 暂时无法获取到服务器端版本信息 </p>');
