@@ -57,9 +57,8 @@ class So extends D_Module {
                 $this->template->assign($now);
                 $this->template->assign('params', $get);
                 $this->template->assign('urlrule', dr_so_url($get, 'page', '[page]'));
-                $this->template->display($get['name'] ? $get['name'] : 'solist.html');
+                $this->template->display( 'solist.html');
             } else {
-                $get['name'] && exit('error');
                 $this->template->display('so.html');
             }
         } else {
