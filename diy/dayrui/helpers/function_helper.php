@@ -2315,6 +2315,8 @@ function dr_geetest($product = 'embed', $submit = '') {
     $rid = rand(0, 99);
     $product == 'popup' && $add = 'gt_captcha_obj.bindOn("#'.$submit.'");';
 
+    $http = defined('SYS_HTTPS') && SYS_HTTPS ? 'https' : 'http';
+
     return '
     <div class="box" id="div_geetest_lib_'.$rid.'">
         <div id="div_id_embed_'.$rid.'"></div>
@@ -2322,7 +2324,7 @@ function dr_geetest($product = 'embed', $submit = '') {
             var gtFailbackFrontInitial = function(result) {
                 var s = document.createElement("script");
                 s.id = "gt_lib";
-                s.src = "http://static.geetest.com/static/js/geetest.0.0.0.js";
+                s.src = "'.$http.'://static.geetest.com/static/js/geetest.0.0.0.js";
                 s.charset = "UTF-8";
                 s.type = "text/javascript";
                 document.getElementsByTagName("head")[0].appendChild(s);
@@ -2346,7 +2348,7 @@ window.gt_captcha_obj = new window.Geetest({
                 '.$add.'
             }
             s = document.createElement("script");
-            s.src = "http://api.geetest.com/get.php?callback=gtcallback";
+            s.src = "'.$http.'://api.geetest.com/get.php?callback=gtcallback";
             $("#div_geetest_lib_'.$rid.'").append(s);
             var gtcallback =( function() {
 var status = 0, result, apiFail;
