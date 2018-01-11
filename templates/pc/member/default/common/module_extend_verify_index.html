@@ -62,8 +62,8 @@
 							<td class="" title="{$c['title']}"><div class="dr_title">{$c['title']}</div></td>
 							<td class="">{dr_date($t['inputtime'], '', 'red')}</td>
 							<td class="">
-								<a href="{SITE_URL}index.php?s={APP_DIR}&c=extend&type=verify&id={$t.id}" target="_blank" class="btn btn-warning btn-xs" ><i class="fa fa-search"></i> 预览</a>
-								<a href="{dr_member_url(APP_DIR.'/everify/edit', array('id'=>$t['id']))}" class="btn green btn-xs"><i class="fa fa-edit"></i> 修改</a>
+								<a href="{SITE_URL}index.php?s={MOD_DIR}&c=extend&type=verify&id={$t.id}" target="_blank" class="btn btn-warning btn-xs" ><i class="fa fa-search"></i> 预览</a>
+								<a href="{dr_member_url(MOD_DIR.'/everify/edit', array('id'=>$t['id']))}" class="btn green btn-xs"><i class="fa fa-edit"></i> 修改</a>
 							</td>
 						</tr>
 						{/loop}

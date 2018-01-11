@@ -3,7 +3,7 @@
 	function dr_delete(id) {
 		art.dialog.confirm("<font color=red><b>你确认要删除吗？</b></font>", function(){
 			// 将表单数据ajax提交验证
-			$.ajax({type: "POST",dataType:"json", url: "{dr_member_url(APP_DIR.'/account/del_attach')}",data: {id:id}, success: function(data) {
+			$.ajax({type: "POST",dataType:"json", url: "{dr_member_url(MOD_DIR.'/account/del_attach')}",data: {id:id}, success: function(data) {
 				//验证成功
 				if (data.status == 1) {
 					dr_tips(data.code, 3, 1);

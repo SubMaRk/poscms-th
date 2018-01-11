@@ -55,19 +55,19 @@
 						if ($t.eid) {
 							$title=$c.name;
 							if ($t.eid == -1) {
-								$url=dr_member_url(APP_DIR.'/extend/add',array('cid'=>$t.cid, 'catid'=>$t.catid, 'did'=>$t.id));
+								$url=dr_member_url(MOD_DIR.'/extend/add',array('cid'=>$t.cid, 'catid'=>$t.catid, 'did'=>$t.id));
 							} else {
-								$url=dr_member_url(APP_DIR.'/extend/edit',array('cid'=>$t.cid, 'catid'=>$t.catid, 'id'=>$t.eid, 'did'=>$t.id));
+								$url=dr_member_url(MOD_DIR.'/extend/edit',array('cid'=>$t.cid, 'catid'=>$t.catid, 'id'=>$t.eid, 'did'=>$t.id));
 							}
-							$gurl=SITE_URL.'index.php?s='.APP_DIR.'&c=extend&type=draft&id='.$t['id'];
+							$gurl=SITE_URL.'index.php?s='.MOD_DIR.'&c=extend&type=draft&id='.$t['id'];
 						} else {
 							$title=$c.title;
 							if ($t.cid) {
-								$url=dr_member_url(APP_DIR.'/home/edit',array('id'=>$t.cid, 'did'=>$t.id));
+								$url=dr_member_url(MOD_DIR.'/home/edit',array('id'=>$t.cid, 'did'=>$t.id));
 							} else {
-								$url=dr_member_url(APP_DIR.'/home/add',array('did'=>$t.id));
+								$url=dr_member_url(MOD_DIR.'/home/add',array('did'=>$t.id));
 							}
-							$gurl=SITE_URL.'index.php?s='.APP_DIR.'&c=show&type=draft&id='.$t['id'];
+							$gurl=SITE_URL.'index.php?s='.MOD_DIR.'&c=show&type=draft&id='.$t['id'];
 						}
 						?>
 						<tr id="dr_row_{$t.id}">

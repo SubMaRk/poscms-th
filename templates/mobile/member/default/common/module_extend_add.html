@@ -21,7 +21,7 @@
             $.ajax({
                 type: "POST",
                 dataType:"json",
-                url: memberpath+'index.php?s=member&c=api&m=ajax_delete_draft&sid={SITE_ID}&dir={APP_DIR}&did='+did,
+                url: memberpath+'index.php?s=member&c=api&m=ajax_delete_draft&sid={SITE_ID}&dir={MOD_DIR}&did='+did,
                 success: function(data) {
                     if (data == did) {
                         $("#dr_cgbox_"+did).remove();
@@ -57,7 +57,7 @@
                 $.ajax({
                     type: "POST",
                     dataType:"json",
-                    url: memberpath+'index.php?s=member&c=api&m=ajax_save_draft&sid={SITE_ID}&dir={APP_DIR}&did={$did}',
+                    url: memberpath+'index.php?s=member&c=api&m=ajax_save_draft&sid={SITE_ID}&dir={MOD_DIR}&did={$did}',
                     data: $("#myform").serialize(),
                     success: function(data) { },
                     error: function(HttpRequest, ajaxOptions, thrownError) { }
@@ -68,7 +68,7 @@
                 $.ajax({
                     type: "POST",
                     dataType:"json",
-                    url: memberpath+'index.php?s=member&c=api&m=ajax_save_add&dir={APP_DIR}_extend',
+                    url: memberpath+'index.php?s=member&c=api&m=ajax_save_add&dir={MOD_DIR}_extend',
                     data: $("#myform").serialize(),
                     success: function(data) { },
                     error: function(HttpRequest, ajaxOptions, thrownError) { }
@@ -82,7 +82,7 @@
         <form action="" method="post" class="form-horizontal" novalidate="novalidate">
             <input name="action" id="dr_action" type="hidden" value="" />
             <input name="dr_id" id="dr_id" type="hidden" value="{$data.id}" />
-            <input name="dr_module" id="dr_module" type="hidden" value="{APP_DIR}" />
+            <input name="dr_module" id="dr_module" type="hidden" value="{MOD_DIR}" />
             <div class="form-body">
                 <div class="portlet light">
                     <div class="portlet-title mytitle">
@@ -116,7 +116,7 @@
                                 <button type="submit" class="mysubmit btn green"><i class="fa fa-save"></i> 保存</button>
                                 <button value="" onclick="$('#dr_action').val('draft')" type="submit" class="mysubmit btn blue"> <i class="fa fa-file-o"></i> 草稿</button>
                             </div>
-                            {if !$data.id && $ci->get_cache('module-'.SITE_ID.'-'.APP_DIR, 'setting', 'syn2')}
+                            {if !$data.id && $ci->get_cache('module-'.SITE_ID.'-'.MOD_DIR, 'setting', 'syn2')}
                             <div class="col-md-7" style="padding-top: 6px">
                                 <label>将它同步至微博：</label>
                                 <img src="{THEME_PATH}oauth/sina_share.gif" onclick="{if $member.oauth.sina}dr_sync('sina_share',this){else}dr_confirm_url('您还没有绑定新浪账号呢，现在就去绑定吗？离开页面内容会消失', '{dr_member_url('account/oauth')}'){/if}" align="absmiddle" style="cursor:pointer" />

@@ -1,8 +1,8 @@
 	<div class="page_url">
         <a href="{SITE_URL}">首页</a> <span>&gt;</span>
         <a href="{dr_member_url('home/index')}">会员中心</a> <span>&gt;</span>
-        {if APP_DIR && is_dir(FCPATH.APP_DIR)}
-        <a href="{dr_member_url(APP_DIR.'/home/index')}">{MODULE_NAME}</a> <span>&gt;</span>
+        {if MOD_DIR && is_dir(FCPATH.MOD_DIR)}
+        <a href="{dr_member_url(MOD_DIR.'/home/index')}">{MODULE_NAME}</a> <span>&gt;</span>
         {/if}
         {$meta_name}
     </div>
