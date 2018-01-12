@@ -19,7 +19,7 @@ define('WRITEPATH', WEBPATH.'cache/');
 foreach (array(
              WRITEPATH,
              WRITEPATH.'data/',
-             WRITEPATH.'template/',
+             WRITEPATH.'templates/',
              WRITEPATH.'session/',
              WEBPATH.'config/',
              WEBPATH.'uploadfile/',
