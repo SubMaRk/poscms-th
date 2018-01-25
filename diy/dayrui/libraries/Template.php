@@ -22,6 +22,8 @@ class Template {
     public $_module_root_array; // 默认模块前端模板目录,pc+移动
 
     public $_aroot; // 默认后台项目模板目录
+    public $_set_mobile_file; // 强制设置移动端解析
+    public $_is_module; // 是否加载了模块
 
     public $_options; // 模板变量
     public $_filename; // 主模板名称
@@ -56,6 +58,11 @@ class Template {
         $this->mobile = IS_MOBILE;
         $this->_tname = $this->mobile ? 'mobile' : 'pc';
 
+        // 初始化模板变量
+        $this->_init_var();
+    }
+
+    private function _init_var() {
         // 当前项目模板目录
         if (IS_ADMIN) { // 后台
             $this->_dir = APPPATH.'templates/admin/';
@@ -63,7 +70,7 @@ class Template {
             $this->_root = $this->_root_array[$this->_tname];
             $this->_mdir = $this->_dir = $this->_mroot = $this->_mroot_array[$this->_tname];
             if (APP_DIR != 'member') { // 模块和应用的会员目录
-                $name = is_dir(FCPATH.'app/'.APP_DIR.'/') ? 'app' : 'module';
+                //$name = is_dir(FCPATH.'app/'.APP_DIR.'/') ? 'app' : 'module';
                 $this->_module_root_array = array(
                     'pc' => TPLPATH.'pc/member/'.SITE_TEMPLATE.'/'.APP_DIR.'/',
                     'mobile' => TPLPATH.'mobile/member/'.SITE_TEMPLATE.'/'.APP_DIR.'/',
@@ -82,7 +89,26 @@ class Template {
             $this->cron = SYS_CRON_QUEUE  ? TRUE : FALSE; // 开启任务js
 
         }
+    }
 
+    // 强制设置为移动端模式，并自动释放
+    public function set_mobile_file($is) {
+        $this->_set_mobile_file = $is;
+        if ($is) {
+            $this->_tname = 'mobile';
+            $this->_init_var();
+            if ($this->_is_module) {
+                $this->module();
+            }
+            !defined('IS_MOBILE_HTML') && define('IS_MOBILE_HTML', 1);
+        } else {
+            $this->_tname = 'pc';
+            $this->_init_var();
+            if ($this->_is_module) {
+                $this->module();
+            }
+            !defined('IS_MOBILE_HTML') && define('IS_MOBILE_HTML', 0);
+        }
     }
 
     /**
@@ -110,9 +136,13 @@ class Template {
         }
         include $this->load_view_file($file);
 
-
         // 消毁变量
         $this->_include_file = NULL;
+        if ($this->_set_mobile_file) {
+            $this->_tname = $this->mobile ?  'mobile' : 'pc';
+            $this->_set_mobile_file = 0;
+        }
+
     }
 
     /**
@@ -198,7 +228,7 @@ class Template {
      *
      * @param	string	$dir	模板名称
      */
-    public function module($dir) {
+    public function module($dir = '') {
 
         if (IS_ADMIN || IS_MEMBER) {
             return NULL;
@@ -214,6 +244,8 @@ class Template {
 
         $this->_root = $this->_root_array[$this->_tname];
         $this->_dir = $this->_module_root_array[$this->_tname];
+
+        $this->_is_module = 1;
     }
 
     /**
@@ -436,8 +468,8 @@ $.ajax({
             "<?php if (\$fn_include = \$this->_load(\"\\1\")) include(\$fn_include); ?>",
             "<?php if (\$fn_include = \$this->_load(\"\\1\")) include(\$fn_include); ?>",
             "<?php \\1 ?>",
-            "<?php \$list_temp_\\2 = \$this->list_tag(\"\\1 return=\\2\"); if (\$list_temp_\\2) extract(\$list_temp_\\2); \$count_\\2=count(\$return_\\2); if (is_array(\$return_\\2)) { foreach (\$return_\\2 as \$key_\\2=>\$\\2) { ?>",
-            "<?php \$list_temp = \$this->list_tag(\"\\1\"); if (\$list_temp) extract(\$list_temp); \$count=count(\$return); if (is_array(\$return)) { foreach (\$return as \$key=>\$t) { ?>",
+            "<?php \$return_\\2 = array();\$list_temp_\\2 = \$this->list_tag(\"\\1 return=\\2\"); if (\$list_temp_\\2) extract(\$list_temp_\\2); \$count_\\2=count(\$return_\\2); if (is_array(\$return_\\2)) { foreach (\$return_\\2 as \$key_\\2=>\$\\2) { ?>",
+            "<?php \$return = array();\$list_temp = \$this->list_tag(\"\\1\"); if (\$list_temp) extract(\$list_temp); \$count=count(\$return); if (is_array(\$return)) { foreach (\$return as \$key=>\$t) { ?>",
             "<?php } } ?>",
             "<?php if (\\1) { ?>",
             "<?php } else if (\\1) { ?>",
@@ -522,7 +554,7 @@ $.ajax({
                 continue;
             }
             if (isset($system[$var])) { // 系统参数，只能出现一次，不能添加修饰符
-                $system[$var] = $val;
+                $system[$var] = dr_safe_replace($val);
             } else {
                 if (preg_match('/^([A-Z_]+)(.+)/', $var, $match)) { // 筛选修饰符参数
                     $_pre = explode('_', $match[1]);
@@ -548,7 +580,7 @@ $.ajax({
 
         // 替换order中的非法字符
         isset($system['order']) && $system['order'] && $system['order'] = str_ireplace(
-            array('"', "'", ')', '(', ';', 'select', 'insert'),
+            array('"', "'", ')', '(', ';', 'select', 'insert', '`'),
             '',
             $system['order']
         );
@@ -833,7 +865,7 @@ $.ajax({
             case 'page': // 单页调用
 
                 $system['site'] = !$system['site'] ? SITE_ID : $system['site']; // 默认站点参数
-                $name =  'index';
+                $name = 'index';
                 $data = $this->ci->get_cache('page-'.$system['site'], 'data', $name); // 单页缓存
                 if (!$data) {
                     return $this->_return($system['return'], '没有查询到内容');
@@ -949,7 +981,7 @@ $.ajax({
                     return $this->_return($system['return'], "模块({$system['module']})未安装");
                 }
 
-                $system['order'] = $system['order'] ? ($system['order'] == 'rand' ? 'RAND()' : $system['order']) : 'hits desc';
+                $system['order'] = dr_safe_replace($system['order'] ? ($system['order'] == 'rand' ? 'RAND()' : $system['order']) : 'hits desc');
 
                 $table = $this->ci->db->dbprefix($system['site'].'_'.$module['dirname'].'_tag'); // tag表
                 $sql = "SELECT id,name,code,hits FROM {$table} ORDER BY ".$system['order']." LIMIT ".($system['num'] ? $system['num'] : 10);
@@ -977,7 +1009,7 @@ $.ajax({
             case 'tags': // 调用全局tag
 
                 $system['site'] = !$system['site'] ? SITE_ID : $system['site']; // 默认站点参数
-                $system['order'] = $system['order'] ? ($system['order'] == 'rand' ? 'RAND()' : $system['order']) : 'hits desc';
+                $system['order'] = dr_safe_replace($system['order'] ? ($system['order'] == 'rand' ? 'RAND()' : $system['order']) : 'hits desc');
 
                 $table = $this->ci->db->dbprefix($system['site'].'_tag'); // tags表
                 $where = '';
@@ -1030,6 +1062,10 @@ $.ajax({
                     stripos($sql, 'SELECT+') === 0 && $sql = urldecode($sql);
                     if (stripos($sql, 'SELECT') !== 0) {
                         return $this->_return($system['return'], 'SQL语句只能是SELECT查询语句');
+                    } elseif (preg_match('/select(.*)into outfile(.*)/i', $sql)) {
+                        return $this->_return($system['return'], 'SQL语句只能是SELECT查询语句');
+                    } elseif (preg_match('/select(.*)into dumpfile(.*)/i', $sql)) {
+                        return $this->_return($system['return'], 'SQL语句只能是SELECT查询语句');
                     }
 
                     $total = 0;
@@ -1038,12 +1074,13 @@ $.ajax({
                     // 如存在分页条件才进行分页查询
                     if ($system['page'] && $system['urlrule']) {
                         $page = max(1, (int)$_GET['page']);
-                        $row = $this->_query(preg_replace('/select .* from /iUs', 'SELECT count(*) as c FROM ', $sql), $system['site'], $system['cache'], FALSE);
+                        $s = preg_replace('/select .* from /iUs', 'SELECT count(*) as c FROM ', $sql);
+                        $row = $this->_query($s, $system['site'], $system['cache'], FALSE);
                         $total = (int)$row['c'];
                         $pagesize = $system['pagesize'] ? $system['pagesize'] : 10;
                         // 没有数据时返回空
                         if (!$total) {
-                            return $this->_return($system['return'], '没有查询到内容', $sql, 0);
+                            return $this->_return($system['return'], '没有查询到内容', $s, 0);
                         }
                         $sql.= ' LIMIT '.$pagesize * ($page - 1).','.$pagesize;
                         $pages = $this->_get_pagination(str_replace('[page]', '{page}', urldecode($system['urlrule'])), $pagesize, $total);
@@ -1129,7 +1166,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) {
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1140,7 +1176,7 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
@@ -1237,7 +1273,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) {
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1248,7 +1283,7 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
@@ -1336,7 +1371,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) {
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1347,7 +1381,7 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
@@ -1525,7 +1559,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) {
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1536,7 +1569,7 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
@@ -1617,7 +1650,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) {
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1628,7 +1660,7 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
@@ -1700,7 +1732,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) {
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1711,7 +1742,7 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
@@ -1777,22 +1808,21 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) { // 如存在分页条件才进行分页查询
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $row = $this->_query("SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL", $system['site'], $system['cache'], FALSE);
                     $total = (int)$row['c'];
                     if (!$total) {
                         // 没有数据时返回空
-                        return $this->_return($system['return'], '没有查询到内容', $sql, 0);
+                        return $this->_return($system['return'], '没有查询到内容', '', 0);
                     }
                     $sql_limit = ' LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination(str_replace('[page]', '{page}', $urlrule), $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
 
-                $sql = "SELECT ".($system['field'] ? $system['field'] : "*")." FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ".($system['order'] == "null" ? "" : " ORDER BY {$system['order']}")." $sql_limit";
+                $sql = "SELECT ".($system['field'] ? $system['field'] : "*")." FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ".($system['order'] == "null" || !$system['order'] ? "" : " ORDER BY {$system['order']}")." $sql_limit";
                 $data = $this->_query($sql, $system['site'], $system['cache']);
 
                 // 缓存查询结果
@@ -1886,7 +1916,6 @@ $.ajax({
 
                 if ($system['page'] && $system['urlrule']) { // 如存在分页条件才进行分页查询
                     $page = max(1, (int)$_GET['page']);
-                    $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                     $pagesize = (int) $system['pagesize'];
                     $pagesize = $pagesize ? $pagesize : 10;
                     $sql = "SELECT count(*) as c FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ORDER BY NULL";
@@ -1897,12 +1926,12 @@ $.ajax({
                         return $this->_return($system['return'], '没有查询到内容', $sql, 0);
                     }
                     $sql_limit = ' LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                    $pages = $this->_get_pagination(str_replace('[page]', '{page}', $urlrule), $pagesize, $total);
+                    $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                 } elseif ($system['num']) {
                     $sql_limit = "LIMIT {$system['num']}";
                 }
 
-                $sql = "SELECT ".($system['field'] ? $system['field'] : "*")." FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ".($system['order'] == "null" ? "" : " ORDER BY {$system['order']}")." $sql_limit";
+                $sql = "SELECT ".($system['field'] ? $system['field'] : "*")." FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "")." ".($system['order'] == "null" || !$system['order'] ? "" : " ORDER BY {$system['order']}")." $sql_limit";
                 $data = $this->_query($sql, $system['site'], $system['cache']);
 
                 // 缓存查询结果
@@ -2072,7 +2101,7 @@ $.ajax({
                         $pagesize = $system['pagesize'] ? (int)$system['pagesize'] : (int)$module['category'][$system['catid']]['setting']['template']['pagesize'];
                     }
                     if ($system['sbpage'] || !$urlrule){
-                        $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
+                        $urlrule = $system['urlrule'];
                         $pagesize = intval($system['pagesize'] ? $system['pagesize'] : $pagesize);
                     }
                     $pagesize = $pagesize ? $pagesize : 10;
@@ -2089,7 +2118,7 @@ $.ajax({
                     $sql_limit = "LIMIT {$system['num']}";
                 }
 
-                $sql = "SELECT ".$this->_get_select_field($system['field'] ? $system['field'] : '*')." FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "").($system['order'] == "null" ? "" : " ORDER BY {$system['order']}")." $sql_limit";
+                $sql = "SELECT ".$this->_get_select_field($system['field'] ? $system['field'] : '*')." FROM $sql_from ".($sql_where ? "WHERE $sql_where" : "").($system['order'] == "null" || !$system['order'] ? "" : " ORDER BY {$system['order']}")." $sql_limit";
                 $data = $this->_query($sql, $system['site'], $system['cache']);
 
                 // 缓存查询结果
@@ -2182,11 +2211,10 @@ $.ajax({
 
                 // 搜索分页
                 $page = max(1, (int)$_GET['page']);
-                $urlrule = str_replace('[page]', '{page}', urldecode($system['urlrule']));
                 $pagesize = (int)$system['pagesize'];
                 $pagesize = $pagesize ? $pagesize : 10;
                 $sql_limit = 'LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                $pages = $this->_get_pagination($urlrule, $pagesize, $total);
+                $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
 
                 $sql = "SELECT ".$this->_get_select_field($system['field'] ? $system['field'] : '*')." FROM $sql_from WHERE $sql_where ORDER BY {$system['order']} $sql_limit";
                 $data = $this->_query($sql, $system['site'], $system['cache']);
@@ -2222,7 +2250,7 @@ $.ajax({
     public function _query($sql, $site, $cache, $all = TRUE) {
 
         // 数据库对象
-        $db = $site ? $this->ci->site[$site] : $this->ci->db;
+        $db = $this->ci->db;
         $cname = md5($sql.dr_now_url());
         // 缓存存在时读取缓存文件
         if ($cache && $data = $this->ci->get_cache_data($cname)) {
@@ -2264,7 +2292,8 @@ $.ajax({
             $page = $this->pagination;
         }
 
-        $page['base_url'] = $url;
+        $page['base_url'] = str_replace(array('[page]', '%7Bpage%7D', '%5Bpage%5D', '%7bpage%7d', '%5bpage%5d'), '{page}', $url);
+
         $page['per_page'] = $pagesize;
         $page['total_rows'] = $total;
         $page['use_page_numbers'] = TRUE;
@@ -2381,10 +2410,11 @@ $.ajax({
                 return 'RAND()';
             } else {
                 // 字段排序
+                $my = array();
                 $array = explode(',', $order);
                 foreach ($array as $i => $t) {
                     if (strpos($t, '`') !== false) {
-                        $array[$i] = $t;
+                        $my[$i] = $t;
                         continue;
                     }
                     $a = explode('_', $t);
@@ -2397,19 +2427,17 @@ $.ajax({
                     }
                     $b = strtoupper($b);
                     if (isset($field[$a])) {
-                        $array[$i] = "`$prefix`.`$a` ".($b ? $b : "DESC");
+                        $my[$i] = "`$prefix`.`$a` ".($b ? $b : "DESC");
                     } elseif (isset($field[$a.'_lat']) && isset($field[$a.'_lng'])) {
                         if ($this->ci->my_position) {
                             $this->pos_order = $a;
-                            $array[$i] = $a.' ASC';
+                            $my[$i] = $a.' ASC';
                         } else {
                             $this->ci->msg('没有定位到您的坐标');
                         }
-                    } else {
-                        $array[$i] = $t;
                     }
                 }
-                return implode(',', $array);
+                return $my ? implode(',', $my) : NULL;
             }
         }
 
