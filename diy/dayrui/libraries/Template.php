@@ -1083,7 +1083,7 @@ $.ajax({
                             return $this->_return($system['return'], '没有查询到内容', $s, 0);
                         }
                         $sql.= ' LIMIT '.$pagesize * ($page - 1).','.$pagesize;
-                        $pages = $this->_get_pagination(str_replace('[page]', '{page}', urldecode($system['urlrule'])), $pagesize, $total);
+                        $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                     }
 
                     $data = $this->_query($sql, $system['site'], $system['cache']);
