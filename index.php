@@ -26,6 +26,8 @@ define('WEBPATH', dirname(__FILE__).'/');
 // web网站目录,表示index.php文件的目录
 define('CACHEPATH', WEBPATH.'cache/');
 
+// 是否允许编辑后台模板
+define('IS_EDIT_TPL', 0);
 
 // 该文件的名称
 !defined('SELF') && define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
