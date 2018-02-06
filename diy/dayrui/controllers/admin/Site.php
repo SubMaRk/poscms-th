@@ -61,7 +61,7 @@ class Site extends M_Controller {
         $result	= '';
 
 		if (IS_POST) {
-			$cfg = $this->input->post('data');
+			$cfg = $this->input->post('data', TRUE);
 			$cfg['SITE_DOMAIN'] = $this->input->post('domain');
             // 查询非当前站点绑定的域名
             $as = array();
