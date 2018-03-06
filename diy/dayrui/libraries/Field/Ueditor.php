@@ -298,7 +298,7 @@ class F_Ueditor extends A_Field {
      * @return  string
      */
     public function output($value) {
-        return $value;
+        return htmlspecialchars_decode($value);
     }
 
     /**

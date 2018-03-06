@@ -140,7 +140,7 @@ class Install extends CI_Controller {
                     $config.= "	'port'		=> '{$data['dbport']}',".PHP_EOL;
                     $config.= "	'database'	=> '{$data['dbname']}',".PHP_EOL;
                     $config.= "	'dbdriver'	=> '".($mysqli ? 'mysqli' : 'mysql')."',".PHP_EOL;
-                    $config.= "	'dbprefix'	=> '{$data['dbprefix']}',".PHP_EOL;
+                    $config.= "	'dbprefix'	=> '".dr_safe_replace($data['dbprefix'])."',".PHP_EOL;
                     $config.= "	'pconnect'	=> FALSE,".PHP_EOL;
                     $config.= "	'db_debug'	=> true,".PHP_EOL;
                     $config.= "	'cache_on'	=> FALSE,".PHP_EOL;

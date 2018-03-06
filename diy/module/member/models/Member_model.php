@@ -1446,7 +1446,7 @@ class Member_model extends CI_Model {
         $cache['setting']['space']['domain'] && $cache['synurl'][] = prep_url($cache['setting']['space']['domain']);
         $cache['synurl'] = array_unique($cache['synurl']);
 
-       
+
 
         $this->ci->clear_cache('member');
         $this->dcache->set('member', $cache);
