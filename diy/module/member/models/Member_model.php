@@ -1446,36 +1446,7 @@ class Member_model extends CI_Model {
         $cache['setting']['space']['domain'] && $cache['synurl'][] = prep_url($cache['setting']['space']['domain']);
         $cache['synurl'] = array_unique($cache['synurl']);
 
-        // 更新Ucenter配置
-        if ($cache['setting']['ucenter']) {
-            $s = '<?php if (!defined(\'BASEPATH\')) exit(\'No direct script access allowed\');' . PHP_EOL . '/* UCenter配置 */' . PHP_EOL
-                . stripslashes($cache['setting']['ucentercfg'])
-                . PHP_EOL . '/* FineCMS配置 */' . PHP_EOL
-                . '$dbhost    = \'' . $this->db->hostname . '\';' . PHP_EOL
-                . '$dbuser    = \'' . $this->db->username . '\';' . PHP_EOL
-                . '$dbpw      = \'' . $this->db->password . '\';' . PHP_EOL
-                . '$dbname    = \'' . $this->db->database . '\';' . PHP_EOL
-                . '$pconnect  = 0;' . PHP_EOL
-                . '$tablepre  = \'' . $this->db->dbprefix . '\';' . PHP_EOL
-                . '$dbcharset = \'utf8\';' . PHP_EOL
-                . '/* 同步登录Cookie */' . PHP_EOL
-                . 'define(\'SITE_KEY\', \'' . SYS_KEY . '\');' . PHP_EOL
-                . 'define(\'SITE_PREFIX\', \'' . config_item('cookie_prefix') . '\');' . PHP_EOL
-                . '?>';
-            file_put_contents(WEBPATH.'api/ucenter/config.inc.php', $s);
-        }
-
-        // 更新UCSSO配置
-        if ($cache['setting']['ucsso']) {
-            $ucsso = htmlspecialchars_decode($cache['setting']['ucssocfg']);
-            if (strpos($ucsso, 'eval') !== false
-                || strpos($ucsso, '_POST') !== false
-                || strpos($ucsso, '_REQUEST') !== false
-                || strpos($ucsso, '_GET') !== false) {
-                return;
-            }
-            file_put_contents(WEBPATH.'api/ucsso/config.php', $ucsso , LOCK_EX);
-        }
+       
 
         $this->ci->clear_cache('member');
         $this->dcache->set('member', $cache);

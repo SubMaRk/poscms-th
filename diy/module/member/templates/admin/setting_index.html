@@ -56,59 +56,15 @@ $(function() {
 				<li class="{if $page==3}active{/if}">
 					<a href="#tab_3" data-toggle="tab" onclick="$('#mypage').val('3')"> <i class="fa fa-chevron-circle-right"></i> {fc_lang('登录设置')} </a>
 				</li>
-				<li class="{if $page==4}active{/if}">
-					<a href="#tab_4" data-toggle="tab" onclick="$('#mypage').val('4')"> <i class="fa fa-slack"></i> Ucenter </a>
-				</li>
 				<li class="{if $page==5}active{/if}">
 					<a href="#tab_5" data-toggle="tab" onclick="$('#mypage').val('5')"> <i class="fa fa-tasks"></i> {fc_lang('字段格式')} </a>
 				</li>
-				<li class="{if $page==9}active{/if}">
-					<a href="#tab_9" data-toggle="tab" onclick="$('#mypage').val('9')"> <i class="fa fa-code"></i> UCSSO </a>
-				</li>
+
 			</ul>
 		</div>
 		<div class="portlet-body">
 			<div class="tab-content">
 
-				<div class="tab-pane  {if $page==9}active{/if}" id="tab_9">
-					<div class="form-body">
-
-						<div class="form-group">
-							<label class="col-md-2 control-label">UCSSO：</label>
-							<div class="col-md-9">
-								<div class="radio-list">
-									<label class="radio-inline"><input type="radio" name="data[ucsso]" value="1" {dr_set_radio('ucsso', $data['ucsso'], '1')} /> {fc_lang('开启')}</label>
-									<label class="radio-inline"><input type="radio" name="data[ucsso]" value="0" {dr_set_radio('ucsso', $data['ucsso'], '0', TRUE)} /> {fc_lang('关闭')}</label>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">网站通信地址：</label>
-							<div class="col-md-9">
-								<label><input readonly class="form-control input-large" type="text" value="{trim(SITE_URL, '/')}"/></label>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">其他通信地址：</label>
-							<div class="col-md-9">
-								<label><textarea readonly style="height:80px" class="form-control input-large">{loop $synurl $url}
-					{if $url != trim(SITE_URL, '/')}{$url}{PHP_EOL}{/if}
-					{/loop}</textarea></label>
-								<span class="help-block">多站点或者绑定域名时，将这些URL复制到UCSSO中的“网站其他地址”中</span>
-
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">通信配置代码：</label>
-							<div class="col-md-9">
-								<textarea  style="height:180px" class="form-control" name="data[ucssocfg]">{$data.ucssocfg}</textarea>
-								<span class="help-block">通信配置代码复制到这里</span>
-
-							</div>
-						</div>
-
-					</div>
-				</div>
 
 				<div class="tab-pane  {if $page==0}active{/if}" id="tab_0">
 					<div class="form-body">
@@ -314,45 +270,6 @@ $(function() {
 								<span class="help-block">{fc_lang('单位秒，默认为86400秒，超时之后自动退出账号')}</span>
 							</div>
 						</div>
-					</div>
-				</div>
-				<div class="tab-pane  {if $page==4}active{/if}" id="tab_4">
-					<div class="form-body">
-
-
-						<div class="form-group">
-							<label class="col-md-2 control-label">Ucenter：</label>
-							<div class="col-md-9">
-								<div class="radio-list">
-									<label class="radio-inline"><input type="radio" name="data[ucenter]" value="1" {dr_set_radio('ucenter', $data['ucenter'], '1')} /> {fc_lang('开启')}</label>
-									<label class="radio-inline"><input type="radio" name="data[ucenter]" value="0" {dr_set_radio('ucenter', $data['ucenter'], '0', TRUE)} /> {fc_lang('关闭')}</label>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">{fc_lang('通信的主URL')}：</label>
-							<div class="col-md-9">
-								<label><input readonly class="form-control input-large" type="text" name="ucenterapi" value="{trim(SITE_URL, '/')}"/></label>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">{fc_lang('通信的其他URL')}：</label>
-							<div class="col-md-9">
-								<label><textarea readonly style="height:80px" class="form-control input-large" name="ucenterapi">{loop $synurl $url}
-					{if $url != trim(SITE_URL, '/')}{$url}{PHP_EOL}{/if}
-					{/loop}</textarea></label>
-								<span class="help-block">{fc_lang('多站点或者绑定域名时，将这些URL复制到Ucenter中的“应用的其他 URL”中')}</span>
-
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">{fc_lang('UC配置信息')}：</label>
-							<div class="col-md-9">
-								<textarea  style="height:180px" class="form-control" name="data[ucentercfg]">{$data.ucentercfg}</textarea>
-
-							</div>
-						</div>
-
 					</div>
 				</div>
 
