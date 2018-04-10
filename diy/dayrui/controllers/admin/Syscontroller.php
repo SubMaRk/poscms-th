@@ -127,8 +127,8 @@ class Syscontroller extends M_Controller {
             // 创建文件
             $code = file_get_contents(WEBPATH.'cache/install/sysc.php');
             $code = str_replace(
-                array('{name}', '{cname}', '{icname}', '{id}'),
-                array($data['name'], $data['cname'], $name, $id),
+                array('{cname}', '{icname}', '{id}'),
+                array($data['cname'], $name, $id),
                 $code
             );
             $a = file_put_contents(FCPATH.$file, $code);
