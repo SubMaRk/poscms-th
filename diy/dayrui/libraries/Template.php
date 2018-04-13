@@ -554,7 +554,7 @@ $.ajax({
                 continue;
             }
             if (isset($system[$var])) { // 系统参数，只能出现一次，不能添加修饰符
-                $system[$var] = dr_safe_replace($val);
+                $system[$var] = dr_safe_replace2($val);
             } else {
                 if (preg_match('/^([A-Z_]+)(.+)/', $var, $match)) { // 筛选修饰符参数
                     $_pre = explode('_', $match[1]);
@@ -2588,4 +2588,19 @@ function php55_replace_cache_array($string) {
 // 替换list标签中的单引号数组
 function php55_replace_array($string) {
     return "list_tag(\"".preg_replace('#\[\'(\w+)\'\]#Ui', '[\\1]', $string[1])."\")";
+}
+
+function dr_safe_replace2($string) {
+    $string = str_replace('%20', '', $string);
+    $string = str_replace('%20', '', $string);
+    $string = str_replace('%27', '', $string);
+    $string = str_replace('%2527', '', $string);
+    $string = str_replace('*', '', $string);
+    $string = str_replace('"', '&quot;', $string);
+    $string = str_replace("'", '', $string);
+    $string = str_replace('"', '', $string);
+    $string = str_replace(';', '', $string);
+    $string = str_replace('<', '&lt;', $string);
+    $string = str_replace('>', '&gt;', $string);
+    return $string;
 }
