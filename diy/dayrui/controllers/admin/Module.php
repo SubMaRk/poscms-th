@@ -331,7 +331,7 @@ class Module extends M_Controller {
         // 安装权限判断
         if ($this->admin['adminid'] > 1
             && !@in_array(SITE_ID, $this->admin['role']['site'])) {
-            $this->admin_msg(fc_lang('抱歉！您无权限操作(%s)', 'site'));
+            $this->admin_msg(fc_lang('您无权限操作(%s)', 'site'));
         }
 
         // 验证目录规则
@@ -409,9 +409,9 @@ class Module extends M_Controller {
         }
 
         if ($dir == 'weixin') {
-            $this->admin_msg(fc_lang('操作成功，正在刷新...'), dr_url('module/index'), 1);
+            $this->admin_msg(fc_lang('模块安装成功，请按F5刷新后台界面...'), "", 1);
         } else {
-            $this->admin_msg(fc_lang('当前站点安装成功（请更新模块缓存）'), dr_url('module/install', array('id'=>$id)), 1);
+            $this->admin_msg(fc_lang('模块安装成功，请按F5刷新后台界面...'), "", 1);
         }
     }
 	
