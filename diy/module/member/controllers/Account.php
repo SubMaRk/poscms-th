@@ -419,7 +419,6 @@ class Account extends M_Controller {
         !is_dir($dir) && dr_mkdirs($dir);
 
         // 移动端头像提交
-        if (isset($_GET['iajax']) && $_GET['iajax'] && IS_MOBILE) {
             if ($_POST['tx']) {
                 $file = str_replace(' ', '+', $_POST['tx']);
                 if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $file, $result)){
@@ -458,45 +457,6 @@ class Account extends M_Controller {
             } else {
                 exit(function_exists('iconv') ? iconv('UTF-8', 'GBK', '图片不存在') : 'error1');
             }
-        } else {
-
-            $filename = $dir.'avatar.zip'; // 存储flashpost图片
-            file_put_contents($filename, $post);
-
-            // 解压缩文件
-            $this->load->library('Pclzip');
-            $this->pclzip->PclFile($filename);
-            $content = $this->pclzip->listContent();
-            if (!$content) {
-                @unlink($filename);
-                exit(function_exists('iconv') ? iconv('UTF-8', 'GBK', '文件已损坏') : 'The file has damaged');
-            }
-            // 验证文件
-            foreach ($content as $t) {
-                if (strpos($t['filename'], '..') !== FALSE ||
-                    strpos($t['filename'], '/') !== FALSE ||
-                    strpos($t['filename'], '.php') !== FALSE ||
-                    strpos($t['stored_filename'], '..') !== FALSE ||
-                    strpos($t['stored_filename'], '/') !== FALSE ||
-                    strpos($t['stored_filename'], '.php') !== FALSE) {
-                    @unlink($filename);
-                    exit(function_exists('iconv') ? iconv('UTF-8', 'GBK', '非法名称的文件') : 'llegal name file');
-                }
-                if (substr(strrchr($t['stored_filename'], '.'), 1) != 'jpg') {
-                    @unlink($filename);
-                    exit(function_exists('iconv') ? iconv('UTF-8', 'GBK', '文件格式校验不正确') : 'The document format verification is not correct');
-                }
-            }
-
-            // 解压文件
-            if ($this->pclzip->extract(PCLZIP_OPT_PATH, $dir, PCLZIP_OPT_REPLACE_NEWER) == 0) {
-                @dr_dir_delete($dir);
-                exit($this->pclzip->zip(true));
-            }
-            @unlink($filename);
-
-            (!is_file($dir.'45x45.jpg') || !is_file($dir.'90x90.jpg')) && exit(function_exists('iconv') ? iconv('UTF-8', 'GBK', '文件创建失败') : 'File creation failure');
-        }
 
         // ok
         $my = SYS_UPLOAD_PATH.'/member/'.$this->uid.'/';

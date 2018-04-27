@@ -1492,7 +1492,7 @@ function dr_thumb2($img, $width = 100, $height = 100, $autocut = 1) {
     if (is_numeric($img)) {
         $thumb_file = trim(SYS_THUMB_DIR, '/').'/'.md5("index.php?c=image&m=thumb&p=$img-$width-$height-$autocut").'.jpg';
         if (is_file(WEBPATH.$thumb_file)) {
-            return SITE_URL.$thumb_file;
+            return SITE_PC.$thumb_file;
         }
         $ci = &get_instance();
         return $ci->html_thumb2("$img-$width-$height-$autocut");
@@ -1522,7 +1522,7 @@ function dr_thumb($img, $width = NULL, $height = NULL, $water = 0, $size = 0) {
 
         $thumb_file = trim(SYS_THUMB_DIR, '/').'/'.md5("$img-$width-$height-$water-$size").'.jpg';
         if (is_file(WEBPATH.$thumb_file)) {
-            return SITE_URL.$thumb_file;
+            return SITE_PC.$thumb_file;
         }
 
         $ci = &get_instance();
@@ -1609,6 +1609,11 @@ function dr_file($url) {
  */
 function dr_var($name) {
     return  get_instance()->get_cache('sysvar', $name);
+}
+
+// rp函数
+function dr_rp($str, $o, $t) {
+    return str_replace($o, $t, $str);
 }
 
 /**
