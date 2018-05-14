@@ -597,15 +597,7 @@ class Attachment_model extends CI_Model {
 
         // 生成缩略图
         $thumb = array();
-        if ($attachinfo['width']) {
-            @ini_set('memory_limit', '10240M');
-            require_once FCPATH.'dayrui/libraries/Wp_image.php';
-            // 获取系统配置尺寸
-            $sizes = $this->ci->get_cache('siteinfo', SITE_ID, 'image');
-            $editor = new WP_Image_Editor_GD($info['full_path']);
-            $loaded = $editor->load();
-            $loaded && $sizes && $thumb = $editor->multi_resize( $sizes );
-        }
+        
 
         // 存储处理
         $remote = 0;
