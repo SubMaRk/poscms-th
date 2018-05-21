@@ -138,7 +138,8 @@ class Html extends D_Module {
             }
             $this->admin_msg('生成成功（'.dr_format_file_size($size).'）', '', 1);
         } else {
-            $file = WEBPATH.'cache/index/'.(IS_MOBILE ? 'mobile-' : '').DOMAIN_NAME.'-home.html';
+            $name = (IS_MOBILE ? 'mobile-' : '').DOMAIN_NAME.'-home.html';
+            $file = WEBPATH.'cache/index/'.$name;
             $html = dr_catcher_data(SITE_URL.'index.php?cache=123');
             if (!$html) {
                 $this->admin_msg('系统环境无法从url中获取内容，尝试进行系统体检');
@@ -147,7 +148,7 @@ class Html extends D_Module {
             if (!$size) {
                 $this->admin_msg('生成失败，检查cache/index目录是否可写');
             }
-            $this->admin_msg('生成成功（'.dr_format_file_size($size).'）', '', 1);
+            $this->admin_msg('生成成功（'.dr_format_file_size($size).'）：/cache/index/'.$name, '', 1);
 
         }
 
