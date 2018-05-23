@@ -286,62 +286,6 @@ return array(
 
 
     array(
-        'name' => '界面',
-        'mark' => '',
-        'icon' => 'fa fa-html5',
-        'menu' => array(
-            array(
-                'name' => '网站模板',
-                'icon' => 'fa fa-folder',
-                'menu' => array(
-                    array(
-                        'name' => '电脑模板',
-                        'uri' => 'tpl/index',
-                        'icon' => 'fa fa-desktop',
-                    ),
-                    array(
-                        'name' => '手机模板',
-                        'uri' => 'tpl/mobile',
-                        'icon' => 'fa fa-mobile',
-                    ),
-                    array(
-                        'name' => '风格样式',
-                        'uri' => 'theme/index',
-                        'icon' => 'fa fa-css3',
-                    ),
-                    array(
-                        'name' => '标签向导',
-                        'uri' => 'tpl/tag',
-                        'icon' => 'fa fa-tag',
-                    ),
-                )
-            ),
-            array(
-                'name' => '会员模板',
-                'icon' => 'fa fa-user',
-                'menu' => array(
-                    array(
-                        'name' => '电脑模板',
-                        'uri' => 'member/admin/tpl/index',
-                        'icon' => 'fa fa-desktop',
-                    ),
-                    array(
-                        'name' => '手机模板',
-                        'uri' => 'member/admin/tpl/mobile',
-                        'icon' => 'fa fa-mobile',
-                    ),
-                    array(
-                        'name' => '标签向导',
-                        'uri' => 'member/admin/tpl/tag',
-                        'icon' => 'fa fa-tag',
-                    ),
-                )
-            ),
-
-        )
-    ),
-
-    array(
         'name' => '插件',
         'mark' => 'myapp',
         'icon' => 'fa fa-puzzle-piece',
@@ -395,11 +339,6 @@ return array(
                         'name' => '数据结构',
                         'uri' => 'db/index',
                         'icon' => 'fa fa-database',
-                    ),
-                    array(
-                        'name' => '自定义控制器',
-                        'uri' => 'syscontroller/index',
-                        'icon' => 'fa fa-code',
                     ),
                 )
             ),
