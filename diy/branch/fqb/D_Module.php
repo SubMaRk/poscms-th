@@ -643,6 +643,9 @@ class D_Module extends D_Common {
 
         // 判断是否同步栏目
         if ($data['link_id'] && $data['link_id'] > 0) {
+			if (defined('CT_HTML_FILE')) {
+                return;
+            }
             $this->load->model('content_model');
             $data = $this->content_model->get($data['link_id']);
             redirect(dr_url_prefix($data['url'], $this->dir), 301);exit;
