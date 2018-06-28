@@ -3,6 +3,15 @@
  * 安装程序
  */
 header('Content-Type: text/html; charset=utf-8');
+
+if (version_compare(PHP_VERSION, '5.3.10') >= 0) {
+	if (version_compare(PHP_VERSION, '7.2') >= 0) {
+		exit('PHP版本不能高于7.1');
+	}
+} else {
+    exit('PHP至少需要5.4~7.1版本');
+}
+
 if (!function_exists('mcrypt_encrypt')) {
     exit('PHP未开启Mcrypt扩展');
 }
@@ -29,11 +38,7 @@ foreach (array(
     }
 }
 
-if (version_compare(PHP_VERSION, '5.3.10') >= 0) {
-    header('Location: /index.php?c=install');
-} else {
-    exit('PHP至少需要5.3.10以上版本');
-}
+header('Location: /index.php?c=install');
 
 // 检查目录权限
 function dr_check_put_path($dir) {

@@ -41,13 +41,13 @@ class Template {
         $this->cron = FALSE;
         // 默认主项目模板目录
         $this->_root_array = array(
-            'pc' => TPLPATH.'pc/web/'.SITE_TEMPLATE.'/common/',
-            'mobile' => TPLPATH.'mobile/web/'.SITE_TEMPLATE.'/common/',
+            'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/home/',
+            'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/home/',
         );
         // 默认会员项目模板目录
         $this->_mroot_array = array(
-            'pc' => TPLPATH.'pc/member/'.MEMBER_TEMPLATE.'/common/',
-            'mobile' => TPLPATH.'mobile/member/'.MEMBER_TEMPLATE.'/common/',
+            'pc' => TPLPATH.'pc/'.MEMBER_TEMPLATE.'/member/',
+            'mobile' => TPLPATH.'mobile/'.MEMBER_TEMPLATE.'/member/',
         );
         // 默认后台模板目录
         $this->_aroot = FCPATH.'dayrui/templates/admin/';
@@ -72,16 +72,16 @@ class Template {
             if (APP_DIR != 'member') { // 模块和应用的会员目录
                 //$name = is_dir(FCPATH.'app/'.APP_DIR.'/') ? 'app' : 'module';
                 $this->_module_root_array = array(
-                    'pc' => TPLPATH.'pc/member/'.SITE_TEMPLATE.'/'.APP_DIR.'/',
-                    'mobile' => TPLPATH.'mobile/member/'.SITE_TEMPLATE.'/'.APP_DIR.'/',
+                    'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/member/'.APP_DIR.'/',
+                    'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/member/'.APP_DIR.'/',
                 );
                 $this->_dir = $this->_module_root_array[$this->_tname];
             }
         } elseif (APP_DIR && is_dir(FCPATH.'app/'.APP_DIR.'/')) { // 应用
             $this->_root = $this->_root_array[$this->_tname];
             $this->_module_root_array = array(
-                'pc' => TPLPATH.'pc/web/'.SITE_TEMPLATE.'/'.APP_DIR.'/',
-                'mobile' => TPLPATH.'mobile/web/'.SITE_TEMPLATE.'/'.APP_DIR.'/',
+                'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/home/'.APP_DIR.'/',
+                'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/home/'.APP_DIR.'/',
             );
             $this->_dir = $this->_module_root_array[$this->_tname];
         } else { // 首页前端页面
@@ -238,8 +238,8 @@ class Template {
 
         // 默认模板目录
         $this->_module_root_array = array(
-            'pc' => TPLPATH.'pc/web/'.SITE_TEMPLATE.'/'.$module.'/',
-            'mobile' => TPLPATH.'mobile/web/'.SITE_TEMPLATE.'/'.$module.'/',
+            'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/home/'.$module.'/',
+            'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/home/'.$module.'/',
         );
 
         $this->_root = $this->_root_array[$this->_tname];
