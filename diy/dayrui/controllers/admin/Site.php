@@ -145,7 +145,7 @@ class Site extends M_Controller {
 		$template_path = array();
 		$template_path1 = @array_diff(dr_dir_map(FCPATH.'dayrui/templates/', 1), array('admin', 'member'));
 		$template_path1 && $template_path = $template_path1;
-		$template_path2 = dr_dir_map(TPLPATH.'pc/web/', 1);
+		$template_path2 = dr_dir_map(TPLPATH.'pc/', 1);
 		$template_path2 && $template_path = ($template_path ? array_merge($template_path, $template_path2) : $template_path2);
 
 

@@ -199,8 +199,8 @@ class Template {
         // 如果移动端模板不存在就调用主网站风格
         if ($this->mobile && is_file(str_replace('/mobile/', '/pc/', $error))) {
             return str_replace('/mobile/', '/pc/', $error);
-        } elseif ($file == 'msg.html' && is_file(TPLPATH.'pc/web/default/common/msg.html')) {
-            return TPLPATH.'pc/web/default/common/msg.html';
+        } elseif ($file == 'msg.html' && is_file(TPLPATH.'pc/default/home/msg.html')) {
+            return TPLPATH.'pc/default/home/msg.html';
         }
 
         show_error('模板文件 ('.(SYS_DEBUG ? $error : str_replace(TPLPATH, '/', $error)).') 不存在', 200, '模板解析错误');
