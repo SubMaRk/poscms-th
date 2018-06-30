@@ -429,15 +429,7 @@ class Check extends M_Controller {
      */
     private function _web_template() {
 
-        if (!is_file(TPLPATH.'pc/web/'.SITE_TEMPLATE.'/common/index.html')) {
-            return $this->halt('网站前端模板【电脑版】不存在：/pc/web/'.SITE_TEMPLATE.'/common/index.html', 0);
-        } elseif (!is_file(TPLPATH.'pc/member/'.SITE_TEMPLATE.'/common/index.html')) {
-            return  $this->halt('会员中心模板【电脑版】不存在：/pc/member/'.SITE_TEMPLATE.'/common/index.html', 0);
-        } elseif (!is_file(TPLPATH.'mobile/web/'.SITE_TEMPLATE.'/common/index.html')) {
-            return $this->halt('网站前端模板【手机版】不存在：/mobile/web/'.SITE_TEMPLATE.'/common/index.html', 0);
-        } elseif (!is_file(TPLPATH.'mobile/member/'.SITE_TEMPLATE.'/common/index.html')) {
-            return $this->halt('会员中心模板【手机版】不存在：/mobile/member/'.SITE_TEMPLATE.'/common/index.html', 0);
-        }
+        
 
 
 	}

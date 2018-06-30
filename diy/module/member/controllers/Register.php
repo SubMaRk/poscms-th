@@ -141,7 +141,6 @@ class Register extends M_Controller {
 			'regfield' => $MEMBER['setting']['regfield'],
 			'meta_title' => fc_lang('会员注册'),
 		));
-		$tpl = 'register'.($groupid ? '_'.$groupid : '').'.html';
-		$this->template->display(is_file(TPLPATH.'pc/member/'.MEMBER_TEMPLATE.'/common/'.$tpl) ? $tpl : 'register.html');
+		$this->template->display('register.html');
 	}
 }
