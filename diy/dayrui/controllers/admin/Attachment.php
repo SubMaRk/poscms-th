@@ -31,53 +31,53 @@ class Attachment extends M_Controller {
 		$error = 0;
 		
 		if (IS_POST) {
-			$data = $this->input->post('data');
-			$data['id'] = (int)$data['id'];
-			if (!$data['name'] && !$data['id'] && !$data['author'] && !$data['ext']) {
-				$error = fc_lang('必须填写其中一项搜索条件');
-			} elseif (!$data['name'] && $data['id']) {
-				$error = fc_lang('表主键必须与表名称配合搜索');
-			} else {
-				$where = array();
-				if ($data['name'] && $data['id']) {
-					$where[] = '`related`="'.$data['name'].'-'.$data['id'].'"';
-				} elseif ($data['name']) {
-					$where[] = '`related` LIKE "'.$data['name'].'-%"';
-				} else {
-					$where[] = '`related` <> ""';
-				}
-				if ($data['author']) {
-					$uid = get_member_id($data['author']);
-					if ($uid) {
-						$where[] = '`uid`='.$uid;
-					} else {
-						$error = fc_lang('会员不存在');
-						$where = NULL;
-					}
-				}
-				if (!$error && $data['ext']) {
-					$ext = explode(',', $data['ext']);
-					$_ext = array();
-					foreach ($ext as $t) {
-						$_ext[] = '`fileext`="'.$t.'"';
-					}
-					$where[] = '('.implode(' OR ', $_ext).')';
-				}
-				if ($where) {
-					$where = implode(' AND ', $where);
-					$attach = $this->db->select('id')->where($where)->get('attachment')->result_array();
-					if ($attach) {
-						$cache = array();
-						foreach ($attach as $t) {
-							$cache[] = (int)$t['id'];
-						}
-						$this->cache->file->save($this->cache_file, $cache, 7200);
-						$this->admin_msg(fc_lang('正在搜索中，请稍后...'), dr_url('attachment/result'), 2, 3);
-					}
-				}
-				$error = fc_lang('没有搜索到相关附件，请检查搜索条件');
-			}
-			$data['id'] = $data['id'] ? $data['id'] : '';
+            $data = $this->input->post('data',true);
+            $data['id'] = (int)$data['id'];
+            if (!$data['name'] && !$data['id'] && !$data['author'] && !$data['ext']) {
+                $error = fc_lang('必须填写其中一项搜索条件');
+            } elseif (!$data['name'] && $data['id']) {
+                $error = fc_lang('表主键必须与表名称配合搜索');
+            } else {
+                $where = array();
+                if ($data['name'] && $data['id']) {
+                    $where[] = '`related`="'.dr_safe_replace($data['name']).'-'.(int)$data['id'].'"';
+                } elseif ($data['name']) {
+                    $where[] = '`related` LIKE "'.dr_safe_replace($data['name']).'-%"';
+                } else {
+                    $where[] = '`related` <> ""';
+                }
+                if ($data['author']) {
+                    $uid = get_member_id($data['author']);
+                    if ($uid) {
+                        $where[] = '`uid`='.$uid;
+                    } else {
+                        $error = fc_lang('会员不存在');
+                        $where = NULL;
+                    }
+                }
+                if (!$error && $data['ext']) {
+                    $ext = explode(',', $data['ext']);
+                    $_ext = array();
+                    foreach ($ext as $t) {
+                        $_ext[] = '`fileext`="'.dr_safe_replace($t).'"';
+                    }
+                    $where[] = '('.implode(' OR ', $_ext).')';
+                }
+                if ($where) {
+                    $where = implode(' AND ', $where);
+                    $attach = $this->db->select('id')->where($where)->get('attachment')->result_array();
+                    if ($attach) {
+                        $cache = array();
+                        foreach ($attach as $t) {
+                            $cache[] = (int)$t['id'];
+                        }
+                        $this->cache->file->save($this->cache_file, $cache, 7200);
+                        $this->admin_msg(fc_lang('正在搜索中，请稍后...'), dr_url('attachment/result'), 2, 3);
+                    }
+                }
+                $error = fc_lang('没有搜索到相关附件，请检查搜索条件');
+            }
+            $data['id'] = $data['id'] ? $data['id'] : '';
 		} else {
 		    $data['author'] = $this->admin['username'];
         }

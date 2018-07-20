@@ -308,111 +308,13 @@ class Api extends M_Controller {
     // 图片剪切保存
     public function ajax_save_image() {
 
-        $uid = $this->uid;
-        // 附件上传时采用后台登陆会员
-        $this->session->userdata('member_auth_uid') && $uid = $this->member_model->member_uid(1);
-
-        $code = str_replace(' ', '+', $this->input->get('code'));
-        list($size, $path) = explode('|', dr_authcode($code, 'DECODE'));
-        !$size && exit('0|此字段没有设置文件大小');
-
-        // 判断会员权限
-        !$uid && exit('0|未登录无权限');
-
-        if (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
-            $pic = $GLOBALS["HTTP_RAW_POST_DATA"];
-            isset($_GET['width']) && !empty($_GET['width']) && $width = intval($_GET['width']);
-            isset($_GET['height']) && !empty($_GET['height']) && $height = intval($_GET['height']);
-            if (isset($_GET['image']) && !empty($_GET['image'])) {
-                $id = (int)$this->input->get('id');
-                if ($id && $info = get_attachment($id)) {
-                    // 远程图片下载到本地缓存目录
-                    if (isset($info['remote']) && $info['remote']) {
-                        // 远程附件信息
-                        $remote_cfg = $this->get_cache('attachment');
-                        $config = $remote_cfg[SITE_ID]['data'][$info['remote']];
-                        if ($config) {
-                            // 保存临时文件
-                            $file = WEBPATH.'cache/attach/crop_'.$id.'.'.$info['fileext'];
-                            file_put_contents($file, $pic);
-                            $this->load->model('attachment_model');
-                            list($remote, $file) = $this->attachment_model->upload2($config, $file, $info);
-                            exit($id.'|'.$file.'?'.SYS_TIME);
-                        } else {
-                            exit('0|系统异常，此远程附件配置不存在');
-                        }
-                    } else {
-                        $file = SYS_UPLOAD_PATH.'/'.$info['attachment'];
-                        // 覆盖原图片图片
-                        file_put_contents($file, $pic);
-                        // 更新图片信息
-                        echo $id.'|'.SYS_ATTACHMENT_URL.$info['attachment'].'?'.SYS_TIME;exit;
-                    }
-                } else {
-                    // 入库附件表
-                    $path = $path ? '/'.$path.'/' : '/'.date('Ym', SYS_TIME).'/';
-                    !is_dir(SYS_UPLOAD_PATH.$path) && dr_mkdirs(SYS_UPLOAD_PATH.$path);
-                    $fileext = strtolower(trim(substr(strrchr($_GET['image'], '.'), 1, 10))); //扩展名
-                    $filename = substr(md5(time()), 0, 7).rand(100, 999);
-                    $this->load->model('attachment_model');
-                    $id = $this->attachment_model->add_catcher($uid, $path.$filename.'.'.$fileext);
-                    !$id && exit('0|文件入库失败，请重试');
-                    $newfile = SYS_UPLOAD_PATH.$path.$filename.'.'.$fileext;
-                    if (@file_put_contents($newfile, $pic)) {
-                        $info = array(
-                            'file_ext' => '.'.$fileext,
-                            'full_path' => $newfile,
-                            'file_size' => filesize($newfile)/1024,
-                            'client_name' => basename($_GET['image']),
-                        );
-                        $result = $this->attachment_model->upload($uid, $info, $id);
-                        if (is_array($result)) {
-                            exit($id.'|'.dr_get_file($id));
-                        } else {
-                            @unlink($info['full_path']);
-                            exit('0|'.$result);
-                        }
-                    } else {
-                        exit('0|文件移动失败，目录无权限（'.$path.'）');
-                    }
-                }
-
-            } else {
-                exit('0|无图片');
-            }
-            exit;
-        }
-
     }
 
 
     // 图片剪切
     public function ajax_edit_image() {
 
-        $file = $this->input->get('file');
 
-        // 是附件id时
-        if (is_numeric($file) && $info = get_attachment($file)) {
-            $image = isset($info['remote']) && $info['remote'] ? $info['attachment'] : SYS_ATTACHMENT_URL.$info['attachment'];
-            unset($info);
-        } else {
-            $image = $file;
-            $file = 0;
-        }
-        // 图片缓存本地
-
-        $local = 'cache/attach/'.time().'_'.basename($image);
-        file_put_contents(WEBPATH.$local, dr_catcher_data($image));
-        $image = SITE_URL.$local;
-
-        $upload = dr_url('api/ajax_save_image').'&id='.$file.'&image='.$image.'&code='.$this->input->get('code');
-
-        $this->template->assign(array(
-            'name' => $this->input->get('name'),
-            'image' => $image,
-            'upload' => $upload,
-        ));
-        $this->template->display('edit_image.html');
     }
 
     function mbonline() {

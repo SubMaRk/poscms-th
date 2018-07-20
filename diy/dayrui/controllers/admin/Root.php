@@ -301,7 +301,7 @@ class Root extends M_Controller {
 			$data = $this->cache->file->get($cache_file);
 			if (isset($data['start']) && $data['start'] && $data['start'] != $data['end']) {
 				$data['end'] = $data['end'] ? $data['end'] : SYS_TIME;
-				$select->where('logintime BETWEEN '.$data['start'].' AND '. $data['end']);
+				$select->where('logintime BETWEEN '.(int)$data['start'].' AND '. (int)$data['end']);
 			}
 		}
 		

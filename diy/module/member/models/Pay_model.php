@@ -79,7 +79,7 @@ class Pay_model extends CI_Model{
 
         // 存在POST提交时，重新生成缓存文件
         if (IS_POST) {
-            $data = $this->input->post('data');
+            $data = $this->input->post('data', true);
             foreach ($data as $i => $t) {
                 if ($t == '') {
                     unset($data[$i]);
@@ -88,9 +88,9 @@ class Pay_model extends CI_Model{
         }
 
         if ($data) {
-            isset($data['start']) && $data['start'] && $data['start'] != $data['end'] && $select->where('inputtime BETWEEN ' . $data['start'] . ' AND ' . $data['end']);
+            isset($data['start']) && $data['start'] && $data['start'] != $data['end'] && $select->where('inputtime BETWEEN ' . (int)$data['start'] . ' AND ' . intval($data['end'] ? $data['end'] : SYS_TIME));
             strlen($data['status']) > 0 && $select->where('status', (int)$data['status']);
-            strlen($data['keyword']) > 0 && $select->where('(uid in (select uid from '.$this->db->dbprefix('member').' where `username`="'.$data['keyword'].'"))');
+            strlen($data['keyword']) > 0 && $select->where('(uid in (select uid from '.$this->db->dbprefix('member').' where `username`="'.dr_safe_replace($data['keyword']).'"))');
             strlen($data['type']) > 0 && ($data['type'] ==1 ? $select->where('value>0') : $select->where('value<0'));
         }
 
