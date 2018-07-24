@@ -102,6 +102,11 @@ class Setting extends M_Controller {
             foreach ($pay as $dir => $t) {
                 if (isset($data[$dir])) {
                     $data[$dir]['name'] = $t['name'];
+					
+                    foreach ($data[$dir] as $i => $v) {
+                        $data[$dir][$i] = dr_safe_replace($v);
+                    }
+					
                     $file = WEBPATH.'api/pay/'.$dir.'/config.php';
                     $size = $this->dconfig->file($file) ->note($dir.' 支付接口配置文件')->space(12)->to_require_one($data[$dir], $data[$dir]);
 					!$size && $this->admin_msg(fc_lang('文件【%s】修改失败，请检查权限', 'api/pay/'.$dir.'/config.php'));
@@ -156,11 +161,11 @@ class Setting extends M_Controller {
 			$data = $this->input->post('data');
 			foreach ($oauth as $i => $name) {
 				$cfg[$i] = array(
-					'key' => trim($data['key'][$i]),
+					'key' => dr_safe_replace($data['key'][$i]),
 					'use' => isset($data['use'][$i]) ? 1 : 0,
 					'name' => $config[$i]['name'] ? $config[$i]['name'] : $name,
 					'icon' => $config[$i]['icon'] ? $config[$i]['icon'] : $i,
-					'secret' => trim($data['secret'][$i])
+					'secret' => dr_safe_replace($data['secret'][$i])
 				);
 			}
 			$this->dconfig->file(WEBPATH.'config/oauth.php')->note('OAuth2授权登录')->to_require($cfg);
