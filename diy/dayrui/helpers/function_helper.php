@@ -1617,6 +1617,18 @@ function dr_rp($str, $o, $t) {
 }
 
 /**
+ * 安全过滤文件及目录名称函数
+ */
+function dr_safe_filename($string) {
+    return str_replace(
+        array('..', "/", '\\', ' ', '<', '>', "{", '}', ';', '[', ']'),
+        '',
+        $string
+    );
+}
+
+
+/**
  * 格式化自定义字段内容
  *
  * @param	string	$field	字段类型

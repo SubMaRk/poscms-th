@@ -663,7 +663,7 @@ class Module extends M_Controller {
         }
 
 		$id = (int)$this->input->get('id');
-		$dir = $this->input->get('dir');
+        $dir = dr_safe_filename($this->input->get('dir'));
 		if ($id) {
             $this->module_model->del($id);
         }
