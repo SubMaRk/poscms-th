@@ -263,7 +263,7 @@ class Module extends M_Controller {
      */
     public function copy() {
 		if ($this->is_auth('admin/module/config')) {
-			$dir = strtolower($this->input->get('dir'));
+            $dir = dr_safe_filename(strtolower($this->input->get('dir')));
 			if (IS_POST) {
                 if (!is_file(FCPATH.'module/'.$dir.'/config/module.php')) {
                     exit(dr_json(0, fc_lang('母模块[%s]不存在', $dir))); //
@@ -304,7 +304,7 @@ class Module extends M_Controller {
      */
     public function export() {
 		if ($this->is_auth('admin/module/config')) {
-			$dir = strtolower($this->input->get('dir'));
+            $dir = dr_safe_filename(strtolower($this->input->get('dir')));
 			$name = $this->input->get('name');
 			if ($this->input->get('action') == 1) {
 				$this->_copy_file(FCPATH.'module/'.$dir.'/config/', FCPATH.'module/'.$dir.'/_config/');
@@ -335,7 +335,7 @@ class Module extends M_Controller {
         }
 
         // 验证目录规则
-        $dir = strtolower(basename($this->input->get('dir')));
+        $dir = dr_safe_filename(strtolower($this->input->get('dir')));
         if (!preg_match('/^[a-z]+$/U', $dir)) {
             $this->admin_msg(fc_lang('模块目录格式不正确，只能由英文字母组成'));
         } elseif (!is_file(FCPATH.'module/'.$dir.'/config/module.php')) {
@@ -641,7 +641,7 @@ class Module extends M_Controller {
      * 清空
      */
     public function clear() {
-        $dir = $this->input->get('dir');
+        $dir = dr_safe_filename($this->input->get('dir'));
         $sid = (int)$this->input->get('sid');
         if ($this->admin['adminid'] > 1
             && !@in_array($sid, $this->admin['role']['site'])) {
