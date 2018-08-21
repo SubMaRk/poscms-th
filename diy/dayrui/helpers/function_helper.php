@@ -3655,39 +3655,7 @@ function dr_in_array($a, $arr) {
 // 店铺商品列表
 function dr_space_mall_list_url($uid, $params, $name, $value, $page = FALSE) {
 
-    if ($name) {
-        if (strlen($value)) {
-            $params[$name] = $value;
-        } else {
-            unset($params[$name]);
-        }
-    }
-
-    if (is_array($params)) {
-        foreach ($params as $i => $t) {
-            if (strlen($t) == 0) unset($params[$i]);
-        }
-    }
-
-    $value = dr_rewrite_encode($params);
-
-    $ci	= &get_instance();
-    $space = $ci->get_cache('member', 'setting', 'space');
-    $domain = dr_space_domain($uid);
-    $space['domain'] = $domain ? $domain : ($space['domain'] ? 'http://'.$space['domain'].'/' : '');
-    $space['dirname'] = 'space';
-    if ($domain) {
-        // 绑定域名时的情况
-        $rule = $page ? $space['rule']['umall_list_domain_page'] : $space['rule']['umall_list_domain_page'];
-    } else {
-        // 未绑定域名
-        $rule = $page ? $space['rule']['umall_list_page'] : $space['rule']['umall_list_page'];
-    }
-    if ($rule) {
-        return dr_uri_prefix('rewrite', $space, array(), SITE_FID).str_replace(array('{uid}', '{search}', '{page}'), array($uid, $value, '[page]'), $rule);
-    } else {
-        return dr_uri_prefix('php', $space, array(), SITE_FID).($domain ? '' : 'uid='.$uid.'&').'action=mall&search='.$value.($page ? '&page=[page]' : '');
-    }
+    
 }
 
 // 获取cms域名部分
