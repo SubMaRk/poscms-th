@@ -15,7 +15,7 @@ function_exists('ini_set') && ini_set('display_errors', TRUE);
 function_exists('ini_set') && ini_set('memory_limit', '1024M');
 
 // 查询执行超时时间
-function_exists('set_time_limit') && set_time_limit(30);
+function_exists('set_time_limit') && set_time_limit(60);
 
 // 系统核心程序目录,支持自定义路径和改名
 define('FCPATH', dirname(__FILE__).'/diy/');

@@ -40,7 +40,7 @@ return array(
 	'SITE_IMAGE_COLOR'              => '', //
 	'SITE_IMAGE_SIZE'               => '', //
 	'SITE_IMAGE_TEXT'               => '', //
-	'SITE_DOMAIN'                   => 'www.fc.com', //网站的域名
+	'SITE_DOMAIN'                   => 'www.mb.com', //网站的域名
 	'SITE_NAVIGATOR'                => '测试,首页幻灯,首页头条,底部导航,友情链接,,,,,', //网站导航信息，多个导航逗号分开
 	'SITE_IMAGE_CONTENT'            => 0, //是否内容编辑器显示水印图片
 

@@ -80,13 +80,7 @@ class Install extends CI_Controller {
                     if (version_compare(PHP_VERSION, '5.5.0') >= 0 && !$mysqli) {
                         exit(dr_json(0, '您的PHP环境必须启用Mysqli扩展'));
                     }
-                    // 参数判断
-                    if (!preg_match('/^[\x7f-\xff\dA-Za-z\.\_]+$/', $data['admin'])) {
-                        exit(dr_json(0, '管理员账号格式不正确'));
-                    }
-                    if (!$data['password']) {
-                        exit(dr_json(0, '管理员密码不能为空'));
-                    }
+                    
                     if (!$data['dbname']) {
                         exit(dr_json(0, '数据库名称不能为空'));
                     }
@@ -96,10 +90,7 @@ class Install extends CI_Controller {
                     if (strpos($data['dbname'], '.') !== false) {
                         exit(dr_json(0, '数据库名称不能存在.号'));
                     }
-                    $this->load->helper('email');
-                    if (!$data['email'] || !valid_email($data['email'])) {
-                        exit(dr_json(0, 'Email格式不正确'));
-                    }
+                   
                     if ($mysqli) {
                         if (!@mysqli_real_connect($mysqli, $data['dbhost'], $data['dbuser'], $data['dbpw'])) {
                             exit(dr_json(0, '[mysqli_real_connect] 无法连接到数据库服务器（'.$data['dbhost'].'），请检查用户名（'.$data['dbuser'].'）和密码（'.$data['dbpw'].'）是否正确'));
@@ -160,94 +151,16 @@ class Install extends CI_Controller {
                     }
                     // 加载数据库
                     $this->load->database();
-                    $salt = substr(md5(rand(0, 999)), 0, 10);
-                    $password = md5(md5($data['password']).$salt.md5($data['password']));
 
                     // 导入表结构
-                    $this->_query(str_replace(
-                        array('{dbprefix}', '{username}', '{password}', '{salt}', '{email}'),
-                        array($this->db->dbprefix, $data['admin'], $password, $salt, $data['email']),
-                        file_get_contents(WEBPATH.'cache/install/install.sql')
-                    ));
-
-                    // 导入会员菜单数据
-                    $this->_query(str_replace(
-                        '{dbprefix}',
-                        $this->db->dbprefix,
-                        file_get_contents(WEBPATH.'cache/install/member_menu.sql')
-                    ));
-
-                    // 系统配置文件
-                    $this->load->model('system_model');
-                    $config = array(
-                        'SYS_LOG' => 'FALSE',
-                        'SYS_KEY' => 'poscms'.md5(time()),
-                        'SYS_DEBUG'	=> 'FALSE',
-                        'SYS_HELP_URL' => '',
-                        'SYS_EMAIL' => $data['email'],
-                        'SYS_MEMCACHE' => 'FALSE',
-                        'SYS_UPLOAD_DIR' => SYS_UPLOAD_DIR,
-                        'SYS_CRON_QUEUE' => 0,
-                        'SYS_CRON_NUMS' => 20,
-                        'SYS_CRON_TIME' => 300,
-
-
-                        'SYS_ONLINE_NUM' => 1000,
-                        'SYS_ONLINE_TIME' => 7200,
-
-                        'SYS_NAME' => 'POSCMS',
-                        'SYS_NEWS' => 'TRUE',
-                        'SYS_CMS' => 'POSCMS',
-                        'SYS_UPDATE' => 1,
-
-                        'SITE_EXPERIENCE' => '经验值',
-                        'SITE_SCORE' => '虚拟币',
-                        'SITE_MONEY' => '金钱',
-                        'SITE_CONVERT' => 10,
-                        'SITE_ADMIN_CODE' => 'FALSE',
-                        'SITE_ADMIN_PAGESIZE' => 8,
-
-                        'SYS_CACHE_INDEX' => 300,
-                        'SYS_CACHE_MINDEX' => 300,
-                        'SYS_CACHE_MSHOW' => 300,
-                        'SYS_CACHE_MSEARCH' => 300,
-                        'SYS_CACHE_SITEMAP' => 300,
-                        'SYS_CACHE_LIST' => 300,
-                        'SYS_CACHE_MEMBER' => 300,
-                        'SYS_CACHE_ATTACH' => 300,
-                        'SYS_CACHE_FORM' => 300,
-                        'SYS_CACHE_POSTER' => 300,
-                        'SYS_CACHE_SPACE' => 300,
-                        'SYS_CACHE_TAG' => 300,
-
-                    );
-                    $this->system_model->save_config($config, $config);
-                    // 站点配置文件
-                    $this->load->model('site_model');
-                    $this->load->library('dconfig');
-                    if (is_file(WEBPATH.'config/site/1.php')) {
-                        $config = require WEBPATH.'config/site/1.php';
-                    }
-                    $config['SITE_THEME'] = $config['SITE_TEMPLATE'] = 'default';
-                    $config['SITE_DOMAIN'] = $config['SITE_ATTACH_HOST'] = $config['SITE_ATTACH_URL'] = strtolower($_SERVER['HTTP_HOST']);
-                    $site = array(
-                        'name' => 'POSCMS',
-                        'domain' => strtolower($_SERVER['HTTP_HOST']),
-                        'setting' => $config,
-                    );
-                    $this->site_model->add_site($site);
-                    $this->dconfig->file(WEBPATH.'config/site/1.php')->note('站点配置文件')->space(32)->to_require_one($this->site_model->config, $config);
-
-                    // 初始化菜单
-                    $this->load->model('menu_model');
-                    $this->menu_model->init();
-
-                    // 导入默认数据
-                    $this->_query(str_replace(
+					$sql = file_get_contents(WEBPATH.'cache/install/install.sql');
+					$sql = str_replace(
                         array('{dbprefix}', '{site_url}'),
-                        array($this->db->dbprefix, 'http://'.strtolower($_SERVER['HTTP_HOST'])),
-                        file_get_contents(WEBPATH.'cache/install/default.sql')
-                    ));
+                        array($this->db->dbprefix, strtolower($_SERVER['HTTP_HOST'])),
+                        $sql
+                    );
+                    $this->_query($sql);
+
                     exit(dr_json(1, dr_url('install/index', array('step' => $step + 1))));
                 }
                 break;

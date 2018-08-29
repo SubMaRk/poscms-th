@@ -73,7 +73,7 @@
 										<div class="col-md-6">
 											<ul class="list-unstyled">
 												<!--调用新闻模块的“首页中间”属性的最新10条-->
-												{list action=module flag=1 module=news order=updatetime num=5}
+												{list action=module  module=news order=updatetime num=5}
 												<li style="line-height: 23px"><span class="badge badge-empty badge-success"></span>&nbsp;<a href="{$t.url}" class="title">{dr_strcut($t.title, 28)}</a></li>
 												{/list}
 											</ul>
@@ -81,7 +81,7 @@
 										<div class="col-md-6">
 											<ul class="list-unstyled">
 												<!--调用新闻模块的“首页中间”属性的最新10条-->
-												{list action=module flag=1 module=news order=updatetime num=5,5}
+												{list action=module  module=news order=updatetime num=5,5}
 												<li style="line-height: 23px"><span class="badge badge-empty badge-success"></span>&nbsp;<a href="{$t.url}" class="title">{dr_strcut($t.title, 28)}</a></li>
 												{/list}
 											</ul>
@@ -95,7 +95,7 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<div class="portlet light" style="height: 90px; text-align: center;">
+							<div class="portlet light" style="height: 60px; text-align: center;">
 								<h4>POSCMS全能网站管理系统</h4>
 							</div>
 						</div>
@@ -123,7 +123,7 @@
 											<div class="row">
 												<div class="col-md-12 media">
 													<!-- 调用新闻模块的“今日视点”属性的第一条 -->
-													{list action=module flag=3 module=news order=updatetime num=1}
+													{list action=module module=news order=updatetime num=1}
 													<a class="pull-left" href="javascript:;">
 														<img class="media-object" src="{dr_thumb($t.thumb, 80, 80)}" style="width:80px; height:80px;"> </a>
 													<div class="media-body">
@@ -137,7 +137,7 @@
 												<div class="col-md-6">
 													<ul class="list-unstyled">
 														<!-- 调用新闻模块的“阅读推荐”属性的10条数据 -->
-														{list action=module flag=4 module=news order=updatetime num=10}
+														{list action=module  module=news order=updatetime num=2,10}
 														<li style="line-height: 23px"><span class="badge badge-empty badge-success"></span>&nbsp;<a href="{$t.url}" class="title">{dr_strcut($t.title, 28)}</a></li>
 														{/list}
 													</ul>
@@ -145,7 +145,7 @@
 												<div class="col-md-6">
 													<ul class="list-unstyled">
 														<!-- 调用新闻模块最新的数据 -->
-														{list action=module module=news order=updatetime num=10}
+														{list action=module module=news order=updatetime num=12,10}
 														<li style="line-height: 23px"><span class="badge badge-empty badge-success"></span>&nbsp;<a href="{$t.url}" class="title">{dr_strcut($t.title, 28)}</a></li>
 														{/list}
 													</ul>
