@@ -308,7 +308,9 @@ class D_Module extends D_Common {
             -$data['score'] + $this->member['score'] < 0 && $this->msg(fc_lang(SITE_SCORE.'不足！本次需要%s'.SITE_SCORE.'，当前余额%s'.SITE_SCORE, $data['score'], $this->member['score']));
             // 扣减虚拟币
             $this->member_model->update_score(1, $this->uid, -$data['score'], '', '购买《'.($data['name'] ? $data['name'] : $data['title']).'》');
-            // 记录购买历史
+            $data['uid'] && $this->member_model->update_score(1, $data['uid'], $data['score'], '', '卖出《'.($data['name'] ? $data['name'] : $data['title']).'》');
+            
+			// 记录购买历史
             $insert = array(
                 'uid' => $this->uid,
                 'url' => $data['url'],
