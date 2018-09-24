@@ -44,7 +44,7 @@ class Api extends M_Controller {
      */
     public function data2() {
 
-        exit('免费版不支持接口');
+        exit('POSCMS个人版不支持接口');
 
     }
     /**

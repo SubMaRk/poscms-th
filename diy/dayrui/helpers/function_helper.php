@@ -1682,15 +1682,16 @@ function dr_safe_replace($string) {
  */
 function dr_strcut($string, $length, $dot = '...') {
 
-    $charset = 'utf-8';
     if (strlen($string) <= $length) {
         return $string;
     }
 
-    $string = str_replace(array('&amp;', '&quot;', '&lt;', '&gt;'), array('&', '"', '<', '>'), $string);
-    $strcut = '';
+    if (function_exists('mb_substr')) {
+        $strcut = mb_substr($string, 0, $length);
+    } else {
+        $string = str_replace(array('&amp;', '&quot;', '&lt;', '&gt;'), array('&', '"', '<', '>'), $string);
+        $strcut = '';
 
-    if (strtolower($charset) == 'utf-8') {
         $n = $tn = $noc = 0;
         while ($n < strlen($string)) {
             $t = ord($string[$n]);
@@ -1721,19 +1722,19 @@ function dr_strcut($string, $length, $dot = '...') {
             } else {
                 $n++;
             }
-            if ($noc >= $length)
+            if ($noc >= $length) {
                 break;
+            }
         }
-        if ($noc > $length)
+        if ($noc > $length) {
             $n -= $tn;
-        $strcut = substr($string, 0, $n);
-    } else {
-        for ($i = 0; $i < $length; $i++) {
-            $strcut.= ord($string[$i]) > 127 ? $string[$i] . $string[++$i] : $string[$i];
         }
+
+        $strcut = substr($string, 0, $n);
+        $strcut = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $strcut);
     }
 
-    $strcut = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $strcut);
+    $strcut == $string && $dot = '';
 
     return $strcut . $dot;
 }
