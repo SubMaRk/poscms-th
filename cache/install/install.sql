@@ -666,9 +666,9 @@ CREATE TABLE IF NOT EXISTS `{dbprefix}1_down` (
   `displayorder` tinyint(3) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='主表';
 
-REPLACE INTO `{dbprefix}1_down` VALUES(12, 3, 'POSCMS免费版', '', '3.2.0', '简体中文', '共享版', '["WinXp","Win7","Win8"]', 'POSCMS', 'POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码...', 0, 1, 'admin', 9, '/index.php?c=show&id=12', 0, 0, '127.0.0.1', 1535528054, 1535528054, 0, 0, 0);
-REPLACE INTO `{dbprefix}1_down` VALUES(13, 3, 'POSCMS免费版', '', '3.2.0', '简体中文', '共享版', '["WinXp","Win7","Win8"]', 'POSCMS', 'POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码...', 0, 1, 'admin', 9, '/index.php?c=show&id=13', 0, 0, '127.0.0.1', 1535528054, 1535528054, 0, 0, 0);
-REPLACE INTO `{dbprefix}1_down` VALUES(14, 3, 'POSCMS免费版', '', '3.2.0', '简体中文', '共享版', '["WinXp","Win7","Win8"]', 'POSCMS', 'POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码...', 0, 1, 'admin', 9, '/index.php?c=show&id=14', 0, 0, '127.0.0.1', 1535528054, 1535528054, 0, 0, 0);
+REPLACE INTO `{dbprefix}1_down` VALUES(12, 3, 'POSCMS个人版', '', '3.2.0', '简体中文', '共享版', '["WinXp","Win7","Win8"]', 'POSCMS', 'POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码...', 0, 1, 'admin', 9, '/index.php?c=show&id=12', 0, 0, '127.0.0.1', 1535528054, 1535528054, 0, 0, 0);
+REPLACE INTO `{dbprefix}1_down` VALUES(13, 3, 'POSCMS个人版', '', '3.2.0', '简体中文', '共享版', '["WinXp","Win7","Win8"]', 'POSCMS', 'POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码...', 0, 1, 'admin', 9, '/index.php?c=show&id=13', 0, 0, '127.0.0.1', 1535528054, 1535528054, 0, 0, 0);
+REPLACE INTO `{dbprefix}1_down` VALUES(14, 3, 'POSCMS个人版', '', '3.2.0', '简体中文', '共享版', '["WinXp","Win7","Win8"]', 'POSCMS', 'POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码POSCMS源码请在官网下载，请勿使用非官网渠道提供的源码...', 0, 1, 'admin', 9, '/index.php?c=show&id=14', 0, 0, '127.0.0.1', 1535528054, 1535528054, 0, 0, 0);
 
 DROP TABLE IF EXISTS `{dbprefix}1_down_buy`;
 CREATE TABLE IF NOT EXISTS `{dbprefix}1_down_buy` (

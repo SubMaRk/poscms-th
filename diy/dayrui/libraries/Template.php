@@ -31,23 +31,35 @@ class Template {
     public $pagination; // 自定义分页查询
     public $pos_order; // 是否包含有地图定位的排序
 
+    public $action; // list动作
+    public $_load_js; // 加载js
+
     /**
      * 构造函数
      */
-
     public function __construct() {
 
         // 关闭自动运行任务js
         $this->cron = FALSE;
         // 默认主项目模板目录
         $this->_root_array = array(
-            'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/home/',
-            'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/home/',
+            'pc' => $this->get_tpl_path('pc', 1, ''),
+            'mobile' => $this->get_tpl_path('mobile', 1, ''),
+            'client1' => $this->get_tpl_path('client1', 1, ''),
+            'client2' => $this->get_tpl_path('client2', 1, ''),
+            'client3' => $this->get_tpl_path('client3', 1, ''),
+            'client4' => $this->get_tpl_path('client4', 1, ''),
+            'client5' => $this->get_tpl_path('client5', 1, ''),
         );
         // 默认会员项目模板目录
         $this->_mroot_array = array(
-            'pc' => TPLPATH.'pc/'.MEMBER_TEMPLATE.'/member/',
-            'mobile' => TPLPATH.'mobile/'.MEMBER_TEMPLATE.'/member/',
+            'pc' => $this->get_tpl_path('pc', 0, ''),
+            'mobile' => $this->get_tpl_path('mobile', 0, ''),
+            'client1' => $this->get_tpl_path('client1', 0, ''),
+            'client2' => $this->get_tpl_path('client2', 0, ''),
+            'client3' => $this->get_tpl_path('client3', 0, ''),
+            'client4' => $this->get_tpl_path('client4', 0, ''),
+            'client5' => $this->get_tpl_path('client5', 0, ''),
         );
         // 默认后台模板目录
         $this->_aroot = FCPATH.'dayrui/templates/admin/';
@@ -56,32 +68,68 @@ class Template {
 
         // 模板选择
         $this->mobile = IS_MOBILE;
-        $this->_tname = $this->mobile ? 'mobile' : 'pc';
+        $this->_tname = SITE_CLIENT_ID ? 'client'.SITE_CLIENT_ID : ($this->mobile ? 'mobile' : 'pc');
 
         // 初始化模板变量
         $this->_init_var();
+
+        $this->action = array(
+            'cache',
+            'content',
+            'category',
+            'linkage',
+            'navigator',
+            'page',
+            'related',
+            'tag',
+            'tags',
+            'sql',
+            'table',
+            'comment',
+            'model',
+            'space_category',
+            'space_content',
+            'extend',
+            'form',
+            'mform',
+            'member',
+            'space',
+            'module',
+            'search',
+        );
     }
 
     private function _init_var() {
         // 当前项目模板目录
         if (IS_ADMIN) { // 后台
             $this->_dir = APPPATH.'templates/admin/';
+            $this->_mydir = APPPATH.'templates/my/';
         } elseif (IS_MEMBER) { // 会员
             $this->_root = $this->_root_array[$this->_tname];
             $this->_mdir = $this->_dir = $this->_mroot = $this->_mroot_array[$this->_tname];
             if (APP_DIR != 'member') { // 模块和应用的会员目录
                 //$name = is_dir(FCPATH.'app/'.APP_DIR.'/') ? 'app' : 'module';
                 $this->_module_root_array = array(
-                    'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/member/'.APP_DIR.'/',
-                    'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/member/'.APP_DIR.'/',
+                    'pc' => $this->get_tpl_path('pc', 0, APP_DIR),
+                    'mobile' => $this->get_tpl_path('mobile', 0, APP_DIR),
+                    'client1' => $this->get_tpl_path('client1', 0, APP_DIR),
+                    'client2' => $this->get_tpl_path('client2', 0, APP_DIR),
+                    'client3' => $this->get_tpl_path('client3', 0, APP_DIR),
+                    'client4' => $this->get_tpl_path('client4', 0, APP_DIR),
+                    'client5' => $this->get_tpl_path('client5', 0, APP_DIR),
                 );
                 $this->_dir = $this->_module_root_array[$this->_tname];
             }
         } elseif (APP_DIR && is_dir(FCPATH.'app/'.APP_DIR.'/')) { // 应用
             $this->_root = $this->_root_array[$this->_tname];
             $this->_module_root_array = array(
-                'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/home/'.APP_DIR.'/',
-                'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/home/'.APP_DIR.'/',
+                'pc' =>  $this->get_tpl_path('pc', 1, APP_DIR),
+                'mobile' => $this->get_tpl_path('mobile', 1, APP_DIR),
+                'client1' => $this->get_tpl_path('client1', 1, APP_DIR),
+                'client2' =>  $this->get_tpl_path('client2', 1, APP_DIR),
+                'client3' =>  $this->get_tpl_path('client3', 1, APP_DIR),
+                'client4' =>  $this->get_tpl_path('client4', 1, APP_DIR),
+                'client5' => $this->get_tpl_path('client5', 1, APP_DIR),
             );
             $this->_dir = $this->_module_root_array[$this->_tname];
         } else { // 首页前端页面
@@ -89,6 +137,52 @@ class Template {
             $this->cron = SYS_CRON_QUEUE  ? TRUE : FALSE; // 开启任务js
 
         }
+    }
+
+    /**
+     * 强制设置模块模板目录
+     *
+     * @param	string	$dir	模板名称
+     */
+    public function module($dir = '') {
+
+        if (IS_ADMIN || IS_MEMBER) {
+            return NULL;
+        }
+
+        $module = $this->ci->dir ? $this->ci->dir : MOD_DIR;
+
+        // 默认模板目录
+        $this->_module_root_array = array(
+            'pc' => $this->get_tpl_path('pc', 1, $module),
+            'mobile' => $this->get_tpl_path('mobile', 1, $module),
+            'client1' => $this->get_tpl_path('client1', 1, $module),
+            'client2' => $this->get_tpl_path('client2', 1, $module),
+            'client3' => $this->get_tpl_path('client3', 1, $module),
+            'client4' => $this->get_tpl_path('client4', 1, $module),
+            'client5' => $this->get_tpl_path('client5', 1, $module),
+        );
+
+        $this->_root = $this->_root_array[$this->_tname];
+        $this->_dir = $this->_module_root_array[$this->_tname];
+
+        $this->_is_module = 1;
+    }
+
+    // 获取模板目录层级路径
+    public function get_tpl_path($client, $web, $module) {
+
+        $phpcmf = TPLPATH.$client.'/'.SITE_TEMPLATE.($web ? '/home' : '/member').'/'.($module ? $module.'/' : '');
+        if (is_dir($phpcmf)) {
+            return $phpcmf;
+        }
+
+        $path = TPLPATH.$client.'/'.($web ? 'web' : 'member').'/'.SITE_TEMPLATE.($module ? '/'.$module.'/' : '/common/');
+        if (is_dir($path)) {
+            return $path;
+        }
+
+        return $phpcmf;
     }
 
     // 强制设置为移动端模式，并自动释放
@@ -100,14 +194,14 @@ class Template {
             if ($this->_is_module) {
                 $this->module();
             }
-            !defined('IS_MOBILE_HTML') && define('IS_MOBILE_HTML', 1);
+            $this->ci->is_mobile_html = 1;
         } else {
             $this->_tname = 'pc';
             $this->_init_var();
             if ($this->_is_module) {
                 $this->module();
             }
-            !defined('IS_MOBILE_HTML') && define('IS_MOBILE_HTML', 0);
+            $this->ci->is_mobile_html = 0;
         }
     }
 
@@ -125,16 +219,19 @@ class Template {
         if (!$this->_options['my_web_url']) {
             $this->_options['my_web_url'] = dr_now_url();
         }
+        if (isset($this->_options['pages']) && $this->_options['pages']) {
+            $this->_options['mypages'] = $this->_options['pages'];
+        }
         extract($this->_options, EXTR_PREFIX_SAME, 'data');
         $this->_options = NULL;
         $this->_filename = $_name;
 
         // 加载编译后的缓存文件
-        $xxxfile = $this->get_file_name($_name, $_dir);
+        $poscms_tpl_file = $this->get_file_name($_name, $_dir);
         if (defined('SYS_DEBUG') && SYS_DEBUG) {
-            echo "<!--当前页面的模板文件是：$xxxfile （本代码只在调试模式下显示）-->".PHP_EOL;
+            echo "<!--当前页面的模板文件是：$poscms_tpl_file （本代码只在调试模式下显示）-->".PHP_EOL;
         }
-        include $this->load_view_file($xxxfile);
+        include $this->load_view_file($poscms_tpl_file);
 
         // 消毁变量
         $this->_include_file = NULL;
@@ -143,7 +240,19 @@ class Template {
             $this->_set_mobile_file = 0;
         }
 
+        $this->_load_js = NULL;
     }
+
+    // 动态加载js
+    public function load_js($js) {
+        if (isset($this->_load_js[$js])) {
+            return '';
+        } else {
+            $this->_load_js[$js] = 1;
+            return '<script type=\'text/javascript\' src=\''.$js.'\'></script>';
+        }
+    }
+
 
     /**
      * 设置模块/应用的模板目录
@@ -154,9 +263,15 @@ class Template {
      */
     public function get_file_name($file, $dir = NULL, $include = FALSE) {
 
+        if (!$file) {
+            show_error('未指定模板文件', 200, '模板解析错误');
+        }
+
         if (IS_ADMIN || $dir == 'admin') {
             // 后台操作时，不需要加载风格目录，如果文件不存在可以尝试调用主项目模板
-            if (@is_file($this->_dir.$file)) {
+            if (@is_file($this->_mydir.$file)) {
+                return $this->_mydir.$file; // 调用当前后台的模板
+            } elseif (@is_file($this->_dir.$file)) {
                 return $this->_dir.$file; // 调用当前后台的模板
             } elseif (@is_file($this->_aroot.$file)) {
                 return $this->_aroot.$file; // 当前项目目录模板不存在时调用主项目的
@@ -202,8 +317,12 @@ class Template {
         } elseif ($file == 'msg.html' && is_file(TPLPATH.'pc/default/home/msg.html')) {
             return TPLPATH.'pc/default/home/msg.html';
         }
+        if (defined("CT_HTML_FILE")) {
+            return FCPATH.'dayrui/templates/admin/tpl_404.html';
+        }
 
-        show_error('模板文件 ('.(SYS_DEBUG ? $error : str_replace(TPLPATH, '/', $error)).') 不存在', 200, '模板解析错误');
+        $s = (SYS_DEBUG ? $error : str_replace(TPLPATH, '/', $error));
+        show_error('模板文件 ('.$s.') 不存在', 200, '模板解析错误');
     }
 
     /**
@@ -221,31 +340,6 @@ class Template {
      */
     public function space($dir) {
         $this->_dir = $this->_root = $this->_mroot = $this->mobile && is_file(WEBPATH.'statics/space/'.$dir.'/mobile/index.html') ? WEBPATH.'statics/space/'.$dir.'/mobile/' : WEBPATH.'statics/space/'.$dir.'/';
-    }
-
-    /**
-     * 强制设置模块模板目录
-     *
-     * @param	string	$dir	模板名称
-     */
-    public function module($dir = '') {
-
-        if (IS_ADMIN || IS_MEMBER) {
-            return NULL;
-        }
-
-        $module = $this->ci->dir ? $this->ci->dir : MOD_DIR;
-
-        // 默认模板目录
-        $this->_module_root_array = array(
-            'pc' => TPLPATH.'pc/'.SITE_TEMPLATE.'/home/'.$module.'/',
-            'mobile' => TPLPATH.'mobile/'.SITE_TEMPLATE.'/home/'.$module.'/',
-        );
-
-        $this->_root = $this->_root_array[$this->_tname];
-        $this->_dir = $this->_module_root_array[$this->_tname];
-
-        $this->_is_module = 1;
     }
 
     /**
@@ -348,7 +442,7 @@ $.ajax({
 	error: function(){ }  
 });  
 </script>';
-            @file_put_contents($cache_file, $content, LOCK_EX) === FALSE && show_error('请将模板缓存目录（/cache/templates/）权限设为777', 404, '无写入权限');
+            @file_put_contents($cache_file, $content, LOCK_EX) === FALSE && show_error('请将模板缓存目录（/cache/templates/）权限设为777', 200, '无写入权限');
         }
 
         return $cache_file;
@@ -484,6 +578,19 @@ $.ajax({
             " ",
         );
 
+
+        // list标签别名
+        foreach ($this->action as $name) {
+            // 正则表达式匹配的模板标签
+            $regex_array[] = '#{'.$name.'\s+(.+?)return=(.+?)\s?}#i';
+            $regex_array[] = '#{'.$name.'\s+(.+?)\s?}#i';
+            $regex_array[] = '#{\s?\/'.$name.'\s?}#i';
+            // 替换直接变量输出
+            $replace_array[] = "<?php \$list_return_\\2 = \$this->list_tag(\"action=".$name." \\1 return=\\2\"); if (\$list_return_\\2) extract(\$list_return_\\2, EXTR_OVERWRITE); \$count_\\2=count(\$return_\\2); if (is_array(\$return_\\2)) { foreach (\$return_\\2 as \$key_\\2=>\$\\2) { ?>";
+            $replace_array[] = "<?php \$list_return = \$this->list_tag(\"action=".$name." \\1\"); if (\$list_return) extract(\$list_return, EXTR_OVERWRITE); \$count=count(\$return); if (is_array(\$return)) { foreach (\$return as \$key=>\$t) { ?>";
+            $replace_array[] = "<?php } } ?>";
+        }
+
         $view_content = preg_replace($regex_array, $replace_array, $view_content);
 
         // 兼容php5.5
@@ -506,6 +613,21 @@ $.ajax({
     // 替换list标签中的单引号数组
     public function _replace_array($string) {
         return "list_tag(\"" . preg_replace('#\[\'(\w+)\'\]#Ui', '[\\1]', $string) . "\")";
+    }
+
+    public function _safe_replace($string) {
+        $string = str_replace('%20', '', $string);
+        $string = str_replace('%20', '', $string);
+        $string = str_replace('%27', '', $string);
+        $string = str_replace('%2527', '', $string);
+        $string = str_replace('*', '', $string);
+        $string = str_replace('"', '&quot;', $string);
+        $string = str_replace("'", '', $string);
+        $string = str_replace('"', '', $string);
+        $string = str_replace(';', '', $string);
+        $string = str_replace('<', '&lt;', $string);
+        $string = str_replace('>', '&gt;', $string);
+        return $string;
     }
 
     // list 标签解析
@@ -541,6 +663,12 @@ $.ajax({
             'pagesize' => '', // 自定义分页数量
         );
         $param = $where = array();
+        // 过滤掉自定义where语句
+        if (preg_match('/where=\'(.+)\'/sU', $_params, $match)) {
+            $param['where'] = $match[1];
+            $_params = str_replace($match[0], '', $_params);
+        }
+
         $params = explode(' ', $_params);
         $sysadj = array('IN', 'BEWTEEN', 'BETWEEN', 'LIKE', 'NOTIN', 'NOT', 'BW');
         foreach ($params as $t) {
@@ -554,7 +682,7 @@ $.ajax({
                 continue;
             }
             if (isset($system[$var])) { // 系统参数，只能出现一次，不能添加修饰符
-                $system[$var] = dr_safe_replace2($val);
+                $system[$var] = $this->_safe_replace($val);
             } else {
                 if (preg_match('/^([A-Z_]+)(.+)/', $var, $match)) { // 筛选修饰符参数
                     $_pre = explode('_', $match[1]);
@@ -588,6 +716,7 @@ $.ajax({
         $action = $system['action'];
         // 当hits动作时，定位到moule动作
         $system['action'] == 'hits' && $system['action'] = 'module';
+
 
         // action
         switch ($system['action']) {
@@ -1075,7 +1204,7 @@ $.ajax({
                     if ($system['page'] && $system['urlrule']) {
                         $page = max(1, (int)$_GET['page']);
                         $s = preg_replace('/select .* from /iUs', 'SELECT count(*) as c FROM ', $sql);
-                        $row = $this->_query($s, $system['site'], $system['cache'], FALSE);
+                        $row = $this->_query($s, $system['site'], $system['cache'], FALSE, $db);
                         $total = (int)$row['c'];
                         $pagesize = $system['pagesize'] ? $system['pagesize'] : 10;
                         // 没有数据时返回空
@@ -1086,7 +1215,7 @@ $.ajax({
                         $pages = $this->_get_pagination($system['urlrule'], $pagesize, $total);
                     }
 
-                    $data = $this->_query($sql, $system['site'], $system['cache']);
+                    $data = $this->_query($sql, $system['site'], $system['cache'], TRUE, $db);
                     $fields = NULL;
 
                     if ($system['module']
@@ -2025,6 +2154,19 @@ $.ajax({
 
                 $fields = $module['field']; // 主表的字段
                 $where[] = array( 'adj' => '', 'name' => 'status', 'value' => 9);
+
+
+                // 是否操作自定义where
+                if ($param['where']) {
+                    $where[] = array(
+                        'adj' => 'SQL',
+                        'use' => 1,
+                        'value' => urldecode($param['where'])
+                    );
+                    unset($param['where']);
+                }
+
+
                 $where = $this->_set_where_field_prefix($where, $tableinfo[$table]['field'], $table, $fields); // 给条件字段加上表前缀
                 $system['field'] = $this->_set_select_field_prefix($system['field'], $tableinfo[$table]['field'], $table); // 给显示字段加上表前缀
                 $system['order'] = $this->_set_order_field_prefix($system['order'], $tableinfo[$table]['field'], $table); // 给排序字段加上表前缀
@@ -2093,12 +2235,16 @@ $.ajax({
                 if ($system['page']) {
                     $page = max(1, (int)$_GET['page']);
                     if (is_numeric($system['catid'])) {
-                        $urlrule = $this->mobile ? dr_mobile_category_url($module['dirname'],  $system['catid'], '{page}') : dr_category_url($module, $module['category'][$system['catid']], '{page}');
+                        $urlrule = dr_category_url($module, $module['category'][$system['catid']], '{page}');
                         /*
                         $urlrule = dr_category_url($module, $module['category'][$system['catid']], '{page}');
                         $this->mobile && $urlrule = dr_mobile_url($urlrule, $module['dirname']);
                         */
-                        $pagesize = $system['pagesize'] ? (int)$system['pagesize'] : (int)$module['category'][$system['catid']]['setting']['template']['pagesize'];
+                        if ($this->_tname == 'mobile') {
+                            $pagesize = $system['pagesize'] ? (int)$system['pagesize'] : (int)$module['category'][$system['catid']]['setting']['template']['mpagesize'];
+                        } else {
+                            $pagesize = $system['pagesize'] ? (int)$system['pagesize'] : (int)$module['category'][$system['catid']]['setting']['template']['pagesize'];
+                        }
                     }
                     if ($system['sbpage'] || !$urlrule){
                         $urlrule = $system['urlrule'];
@@ -2247,10 +2393,10 @@ $.ajax({
     /**
      * 查询缓存
      */
-    public function _query($sql, $site, $cache, $all = TRUE) {
+    public function _query($sql, $site, $cache, $all = TRUE, $db = '') {
 
         // 数据库对象
-        $db = $this->ci->db;
+        $db = $db ? $db : $this->ci->db;
         $cname = md5($sql.dr_now_url());
         // 缓存存在时读取缓存文件
         if ($cache && $data = $this->ci->get_cache_data($cname)) {
@@ -2343,6 +2489,11 @@ $.ajax({
                         $string.= $join." {$t['name']} BETWEEN ".str_replace(',', ' AND ', $t['value'])."";
                         break;
 
+                    case 'SQL':
+                        $string.= $join.' '.$t['value'];
+                        break;
+
+
                     default:
                         if (strpos($t['name'], '`thumb`')) {
                             $t['value'] == 1 ? $string.= $join." {$t['name']}<>''" : $string.= $join." {$t['name']}=''";
@@ -2405,6 +2556,9 @@ $.ajax({
     public function _set_order_field_prefix($order, $field, $prefix) {
 
         if ($order) {
+            if (strpos(($order), 'instr("') === 0) {
+                return $order;
+            }
             if (in_array(strtoupper($order), array('RAND()', 'RAND'))) {
                 // 随机排序
                 return 'RAND()';
@@ -2485,15 +2639,15 @@ $.ajax({
             );
         } else {
             return array(
-                'sql' => $sql,
-                'nums' => $nums,
-                'debug' => $debug,
-                'pageid' => $page,
-                'pages' => $pages,
-                'error' => $error,
-                'total' => $total,
-                'return' => $data,
-                'pagesize' => $pagesize,
+                'sql' => $sql, // sql
+                'nums' => $nums, // 总共的页面数
+                'debug' => $debug, // 错误
+                'pageid' => $page, // 当前页面id
+                'pages' => $pages, // 分页字符
+                'error' => $error, // 错误
+                'total' => $total, // 总共数据
+                'return' => $data, // 返回数据
+                'pagesize' => $pagesize, // 每页显示数量
             );
         }
     }
@@ -2551,6 +2705,19 @@ $.ajax({
                     }
                 }
                 break;
+            case 'MODULE-CONTENT':
+                $site = $site ? $site : SITE_ID;
+                $data = $this->ci->get_module($site);
+                if (!$data) {
+                    // 修复获取不到模块缓存问题
+                    $MOD = $this->ci->dcache->get('module');
+                    if ($MOD[$site]) {
+                        foreach ($MOD[$site] as $dir) {
+                            $data[$dir] = $this->ci->dcache->get('module-'.$site.'-'.$dir);
+                        }
+                    }
+                }
+                break;
             case 'CATEGORY':
                 $site = $site ? $site : SITE_ID;
                 $data = $this->ci->get_cache('module-'.$site.'-'.MOD_DIR, 'category');
@@ -2588,19 +2755,4 @@ function php55_replace_cache_array($string) {
 // 替换list标签中的单引号数组
 function php55_replace_array($string) {
     return "list_tag(\"".preg_replace('#\[\'(\w+)\'\]#Ui', '[\\1]', $string[1])."\")";
-}
-
-function dr_safe_replace2($string) {
-    $string = str_replace('%20', '', $string);
-    $string = str_replace('%20', '', $string);
-    $string = str_replace('%27', '', $string);
-    $string = str_replace('%2527', '', $string);
-    $string = str_replace('*', '', $string);
-    $string = str_replace('"', '&quot;', $string);
-    $string = str_replace("'", '', $string);
-    $string = str_replace('"', '', $string);
-    $string = str_replace(';', '', $string);
-    $string = str_replace('<', '&lt;', $string);
-    $string = str_replace('>', '&gt;', $string);
-    return $string;
 }

@@ -338,51 +338,49 @@ class D_Common extends CI_Controller {
         $this->load->library('session');
 
         $domain = require WEBPATH.'config/domain.php'; // 加载站点域名配置文件
-        $sitecfg = directory_map(WEBPATH.'config/site/'); // 加载全部站点的配置文件
-        foreach ($sitecfg as $file) {
-            $id = (int)basename($file);
-            if (is_file(WEBPATH.'config/site/'.$file)) {
-                $this->site[$id] = & $this->db;
-                $this->site_info[$id] = require WEBPATH.'config/site/'.$file;
-                $this->site_info[$id]['SITE_ID'] = (int) $id;
-                $this->site_info[$id]['SITE_PC'] = $this->site_info[$id]['SITE_URL'] = dr_http_prefix(($this->site_info[$id]['SITE_DOMAIN'] ? $this->site_info[$id]['SITE_DOMAIN'] : DOMAIN_NAME).SITE_PATH);
-                $this->site_info[$id]['SITE_MURL'] = dr_http_prefix(($this->site_info[$id]['SITE_MOBILE'] ? $this->site_info[$id]['SITE_MOBILE'] : DOMAIN_NAME).SITE_PATH);
-            }
+
+        if (is_file(WEBPATH.'config/site/1.php')) {
+            $id = 1;
+            $this->site[$id] = & $this->db;
+            $this->site_info[$id] = require WEBPATH.'config/site/1.php';
+            $this->site_info[$id]['SITE_ID'] = (int) $id;
+            $this->site_info[$id]['SITE_PC'] = $this->site_info[$id]['SITE_URL'] = dr_http_prefix(($this->site_info[$id]['SITE_DOMAIN'] ? $this->site_info[$id]['SITE_DOMAIN'] : DOMAIN_NAME).SITE_PATH);
+            $this->site_info[$id]['SITE_MURL'] = dr_http_prefix(($this->site_info[$id]['SITE_MOBILE'] ? $this->site_info[$id]['SITE_MOBILE'] : DOMAIN_NAME).SITE_PATH);
         }
-        unset($sitecfg);
+
+        define('SITE_CLIENT_ID', 0);
 
         // 分析站点信息
         if (isset($domain[DOMAIN_NAME]) && isset($this->site_info[$domain[DOMAIN_NAME]])) {
             // 通过域名来获取siteid
-            $siteid = (int)$domain[DOMAIN_NAME];
-            $orthers = @explode(',', $this->site_info[$siteid]['SITE_DOMAINS']);
-            $this->site_info[$siteid]['SITE_M_URL'] = $this->site_info[$siteid]['SITE_PC'] = $this->site_info[$siteid]['SITE_URL']; // PC端为主域名
+            $orthers = @explode(',', $this->site_info[1]['SITE_DOMAINS']);
+            $this->site_info[1]['SITE_M_URL'] = $this->site_info[1]['SITE_PC'] = $this->site_info[1]['SITE_URL']; // PC端为主域名
             $uri = isset($_SERVER['HTTP_X_REWRITE_URL']) && trim($_SERVER['REQUEST_URI'], '/') == SELF ? trim($_SERVER['HTTP_X_REWRITE_URL'], '/') : ($_SERVER['REQUEST_URI'] ? trim($_SERVER['REQUEST_URI'], '/') : '');
-            if ($orthers && DOMAIN_NAME != $this->site_info[$siteid]['SITE_DOMAIN'] && in_array(DOMAIN_NAME, $orthers)) {
+            if ($orthers && DOMAIN_NAME != $this->site_info[1]['SITE_DOMAIN'] && in_array(DOMAIN_NAME, $orthers)) {
                 // 判断当前域名为“其他域名”
                 // 301 转向开启
-                defined('SITE_URL_301') && SITE_URL_301 && redirect(dr_http_prefix($this->site_info[$siteid]['SITE_DOMAIN'].'/'.$uri), '', '301');
-                $this->site_info[$siteid]['SITE_PC'] = $this->site_info[$siteid]['SITE_URL'] = dr_http_prefix(DOMAIN_NAME.'/');
-            } elseif (isset($this->site_info[$siteid]['SITE_MOBILE']) && $this->site_info[$siteid]['SITE_MOBILE']) {
+                defined('SITE_URL_301') && SITE_URL_301 && redirect(dr_http_prefix($this->site_info[1]['SITE_DOMAIN'].'/'.$uri), '', '301');
+                $this->site_info[1]['SITE_PC'] = $this->site_info[1]['SITE_URL'] = dr_http_prefix(DOMAIN_NAME.'/');
+            } elseif (isset($this->site_info[1]['SITE_MOBILE']) && $this->site_info[1]['SITE_MOBILE']) {
                 // 当前网站存在移动端域名时
-                if (DOMAIN_NAME == $this->site_info[$siteid]['SITE_MOBILE']) {
+                if (DOMAIN_NAME == $this->site_info[1]['SITE_MOBILE']) {
                     // 当此域名是移动端域名时重新赋值给主站URL
-                    $this->site_info[$siteid]['SITE_URL'] = dr_http_prefix(DOMAIN_NAME.'/');
-                    $this->site_info[$siteid]['SITE_MOBILE'] = TRUE;
+                    $this->site_info[1]['SITE_URL'] = dr_http_prefix(DOMAIN_NAME.'/');
+                    $this->site_info[1]['SITE_MOBILE'] = TRUE;
                 } elseif ($this->_is_mobile()
-                    && $this->site_info[$siteid]['SITE_MOBILE_OPEN']
-                    && $this->site_info[$siteid]['SITE_MOBILE']
-                    && DOMAIN_NAME == $this->site_info[$siteid]['SITE_DOMAIN']
+                    && $this->site_info[1]['SITE_MOBILE_OPEN']
+                    && $this->site_info[1]['SITE_MOBILE']
+                    && DOMAIN_NAME == $this->site_info[1]['SITE_DOMAIN']
                     && !IS_ADMIN) {
                     // 当网站开启强制定向时，并且存在移动端域名、URL是主站的域名、非后台
-                    redirect(dr_http_prefix($this->site_info[$siteid]['SITE_MOBILE'].'/'.$uri), '', '301');
+                    redirect(dr_http_prefix($this->site_info[1]['SITE_MOBILE'].'/'.$uri), '', '301');
                     exit;
                 }
-            } elseif ($this->agent->is_mobile() && $this->site_info[$siteid]['SITE_MOBILE_OPEN']) {
+            } elseif ($this->agent->is_mobile() && $this->site_info[1]['SITE_MOBILE_OPEN']) {
                 // 识别移动端
-                $this->site_info[$siteid]['SITE_MOBILE'] = TRUE;
+                $this->site_info[1]['SITE_MOBILE'] = TRUE;
             }
-            define('SITE_ID', $siteid);
+            define('SITE_ID', 1);
         } else {
             // 识别移动端
             if ($this->agent->is_mobile() && $this->site_info[1]['SITE_MOBILE_OPEN']) {
