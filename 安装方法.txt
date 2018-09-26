@@ -1,4 +1,4 @@
-使用手册：http://www.poscms.net/help-doc/
+﻿使用手册：http://www.poscms.net/help-doc/
 开发手册：http://www.poscms.net/dev-doc/
 
 运行环境：
@@ -10,9 +10,3 @@ mysql5以上
 账号密码都是admin
 
 安装完成请更新缓存
-
-
- {php　$cc＝dr_get_files($cat.字段名);}
- {loop $cc $t}
- {dr_get_file($t.file)}
- {/loop}
