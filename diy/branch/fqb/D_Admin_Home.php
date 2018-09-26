@@ -187,6 +187,8 @@ class D_Admin_Home extends M_Controller {
                     exit(dr_json(1, fc_lang('操作成功，正在刷新...')));
                     break;
                 case 'html':
+                    // 生成权限文件
+                    !dr_html_auth(1) && $this->admin_msg(fc_lang('/cache/templates/ 无法写入文件'));
                     $url = ADMIN_URL.'index.php?s='.APP_DIR.'&c=show&m=html&page=1&type=html&value='.implode(',', $ids).'&total='.count($ids);
                     redirect($url, 'refresh');
                     break;
